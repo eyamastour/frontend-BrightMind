@@ -1,0 +1,28 @@
+<aside class="sidebar">
+    <div class="logo">
+        <img src="assets/logo.jpeg" alt="Bright Mind">
+    </div>
+    <nav class="nav-menu">
+        <a class="nav-item" routerLink="/client/dashboard" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+            <mat-icon>home</mat-icon>
+            Installations
+        </a>
+        <a class="nav-item" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+            <mat-icon>calendar_today</mat-icon>
+            User Permission
+        </a>
+        <a class="nav-item" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+            <mat-icon>storage</mat-icon>
+            Data graph
+        </a>
+        <a class="nav-item" routerLink="/client/profil" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+            <mat-icon>person</mat-icon>
+            User Profile
+        </a>
+    </nav>
+    <!-- Logout Button -->
+    <button class="logout-button" (click)="onLogout()">
+        <mat-icon>logout</mat-icon>
+        Logout
+    </button>
+</aside>

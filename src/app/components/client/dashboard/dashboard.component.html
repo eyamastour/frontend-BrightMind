@@ -1,0 +1,93 @@
+<!-- app.component.html -->
+<router-outlet></router-outlet>
+<div class="dashboard">
+<app-aside />
+<main class="main-content" >
+        <header class="top-bar">
+            <div class="breadcrumb">
+                <mat-icon>home</mat-icon>
+                <span>Installations</span>
+            </div>
+            <div class="header-right">
+                <!-- <select class="language-select">
+                    <option>English</option>
+                </select> -->
+                <!-- <div class="user-profile">
+                    <span>Eya</span>
+                    <mat-icon>expand_more</mat-icon>
+                </div> -->
+            </div>
+        </header>
+
+        <div class="content">
+            <h1>Installations</h1>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <mat-icon>router</mat-icon>
+                    <div class="stat-content">
+                        <h3>Active installations</h3>
+                        <div class="stat-value">7/10</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <mat-icon>wifi</mat-icon>
+                    <div class="stat-content">
+                        <h3>Active Devices</h3>
+                        <div class="stat-value">154/1182</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <mat-icon>notifications</mat-icon>
+                    <div class="stat-content">
+                        <h3>Alarms in progress</h3>
+                        <div class="stat-value">30</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tabs">
+                <button class="tab active">Clusters</button>
+            </div>
+
+            <div class="installation-tree">
+                <div class="search-bar">
+                    <input type="text" placeholder="Search installation" [(ngModel)]="searchTerm" (ngModelChange)="onSearch()">
+                    <select class="filter-select">
+                        <option>All</option>
+                    </select>
+                    <button class="add-button" (click)="openAddDialog()">
+                        Add
+                    </button>
+                </div>
+
+                <div class="tree" *ngFor="let installation of filteredInstallations">
+                    <div class="tree-item root">
+                        <span class="item-name">
+                            <mat-icon>business</mat-icon>
+                            {{ installation.parent }}
+                        </span>
+                        <!-- <div class="item-actions">
+                            <button class="action-btn edit" (click)="openEditDialog(installation); $event.stopPropagation()"></button>
+                            <button class="action-btn delete"   (click)="openDeleteDialog(installation._id)"></button>
+                        </div> -->
+                    </div>
+                    <div class="tree-item child"   >
+                        <span class="item-name"(click)="goToInstallationDetails(installation._id)">
+                            <mat-icon>router</mat-icon>
+                            {{ installation.name }}
+                        </span>
+                        
+                        <div class="item-actions">
+                            <button class="action-btn edit" (click)="openEditDialog(installation); $event.stopPropagation()"></button>
+                            <button class="action-btn delete" (click)="openDeleteDialog(installation._id); $event.stopPropagation()"></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    
+</div>

@@ -1,0 +1,77 @@
+/* Sidebar */
+.sidebar {
+    position: fixed; 
+    top: 0; 
+    left: 0;
+    width: 210px;
+    background-color: #121247;
+    padding: 1rem;
+    color: white;
+    justify-content: space-between;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 20px;
+    z-index: 1000; 
+    height: 100%;
+  
+  }
+  
+  /* Logout button styling */
+  .logout-button {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: auto;
+    /* Pousse le bouton en bas */
+    padding: 10px 15px;
+    background-color: #a5a7ba00;
+    /* Red for logout */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .logout-button:hover {
+    background-color: #a5a7ba00;
+    /* Darker red on hover */
+  }
+  
+  .logout-button mat-icon {
+    font-size: 20px;
+  }
+  
+  .logo {
+    padding: 1rem;
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+.logo img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+}
+  
+  .nav-menu {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+  }
+  
+  .nav-item.active {
+    background-color: rgba(255, 255, 255, 0.1);
+  }

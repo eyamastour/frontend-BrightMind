@@ -1,0 +1,70 @@
+<div class="parent">
+  <div class="container" [ngClass]="isSignDivVisiable ? 'active' : ''" id="container">
+    <!-- Formulaire Inscription -->
+    <div class="form-container sign-up">
+      <app-signup></app-signup>
+    </div>
+
+    <!-- Formulaire Connexion -->
+    <div class="form-container sign-in">
+      <form [formGroup]="signInForm" (ngSubmit)="onSignIn()">
+        <h1>{{ authConstant.LogIn }}</h1>
+
+        <mat-form-field class="input-box">
+          <mat-label>{{ authConstant.EMAIL_LABEL }}</mat-label>
+          <input
+            id="email"
+            type="email"
+            matInput
+            placeholder="name@exemple.com"
+            formControlName="email"
+            required
+          />
+          <mat-hint>{{ authConstant.HINT_EMAIL }}</mat-hint>
+        </mat-form-field>
+
+        <mat-form-field class="input-box">
+          <mat-label>{{ authConstant.PASSWORD }}</mat-label>
+          <input
+            matInput
+            placeholder="password"
+            type="password"
+            formControlName="password"
+            required
+          />
+          <mat-hint>{{ authConstant.PASSWORD_HINT }}</mat-hint>
+        </mat-form-field>
+
+        <mat-checkbox formControlName="rememberMe" class="remember-me">
+          Remember me
+        </mat-checkbox>
+
+        <a href="#">{{ authConstant.FORGOT_PASSWORD }}</a>
+
+        <button mat-flat-button color="primary" class="full-width" type="submit">
+          {{ authConstant.SIGNIN }}
+        </button>
+      </form>
+    </div>
+
+    <!-- Toggle entre Sign In et Sign Up -->
+    <div class="toggle-container">
+      <div class="toggle">
+        <div class="toggle-panel toggle-left">
+          <h1>{{ authConstant.WELCOME_BACK }}</h1>
+          <p>{{ authConstant.PERSONAL_DETAILS_SENTSE }}</p>
+          <button mat-flat-button color="primary" class="hidden" id="login" (click)="isSignDivVisiable = false">
+            Sign In
+          </button>
+        </div>
+        <div class="toggle-panel toggle-right">
+          <h1>{{ authConstant.HELLO_FRIEND }}</h1>
+          <p>{{ authConstant.REGISTER_DETAILS_SENTSE }}</p>
+          <button mat-flat-button color="primary" class="hidden" id="register" (click)="isSignDivVisiable = true">
+            Sign Up
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,99 @@
+<!-- Modal Container -->
+<div class="modal-overlay">
+  <div class="modal-content">
+    <!-- Header -->
+    <div class="modal-header">
+      <div class="header-left">
+        <svg class="edit-icon" viewBox="0 0 24 24" width="20" height="20">
+          <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" stroke="currentColor" fill="none" stroke-width="2"/>
+          <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" stroke="currentColor" fill="none" stroke-width="2"/>
+        </svg>
+        <span>Edit Device</span>
+      </div>
+      <button class="close-btn" (click)="closeDialog()">×</button>
+    </div>
+
+    <!-- Form Content -->
+    <div class="modal-body">
+      <!-- Single field -->
+      <div class="form-field full-width">
+        <label>Name</label>
+        <input type="text" value="Buried">
+      </div>
+
+      <!-- Two columns -->
+      <div class="form-row">
+        <div class="form-field">
+          <label>Type</label>
+          <input type="text" value="R711" readonly>
+        </div>
+        <div class="form-field">
+          <label>Zone</label>
+          <input type="text" value="Buried">
+        </div>
+      </div>
+<div class="rows">
+    
+  <div class="form-row">
+      <div class="form-field">
+        <label>DevEUI</label>
+        <input type="text" value="00-13-7A-10-00-00-57-22">
+      </div>
+      <div class="form-field">
+        <label>activation_type</label>
+        <div class="select-container">
+          <select>
+            <option>OTAA</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-field">
+          <label>AppEUI</label>
+          <input type="text" value="00137A1000000000">
+        </div>
+        <div class="form-field">
+          <label>AppKey</label>
+          <input type="text" value="5A6967426565416C6C96">
+        </div>
+    </div>
+
+
+    <div class="form-row">
+      <div class="form-field">
+        <label>DevAddr</label>
+        <input type="text">
+      </div>
+      <div class="form-field">
+        <label>NwkSKey</label>
+        <input type="text" value="67299b75c53d102b7bb70e">
+      </div>
+      <div class="form-field">
+          <label>AppSKey</label>
+          <input type="text" value="76c72c99d41f1e2fff6ae2a9">
+        </div>
+        <div class="form-field">
+          <label>report_frequency</label>
+          <input type="text" value="1800">
+        </div>
+    </div>
+
+
+</div>
+
+      <div class="warning-text">
+        This operation will require the installation to be restarted
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="modal-footer">
+      <button class="save-btn">
+        <svg viewBox="0 0 24 24" width="16" height="16">
+          <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z" stroke="white" fill="none" stroke-width="2"/>
+          <path d="M17 21v-8H7v8M7 3v5h8" stroke="white" fill="none" stroke-width="2"/>
+        </svg>
+        Save
+      </button>
+    </div>
+  </div>
+</div>

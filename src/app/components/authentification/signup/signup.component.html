@@ -1,0 +1,71 @@
+<div class="signup-container">
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>{{ authConstant.SIGNUP }}</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <form [formGroup]="signupForm" (ngSubmit)="onSignup()" class="signup-form">
+        <mat-form-field appearance="outline" class="input-field">
+          <mat-label>{{ authConstant.EMAIL }}</mat-label>
+          <input matInput formControlName="email" required type="email" />
+          <mat-icon matSuffix>email</mat-icon>
+          <mat-error *ngIf="signupForm.controls['email'].hasError('required')">
+            {{ authConstant.EMAIL_REQUIRED }}
+          </mat-error>
+          <mat-error *ngIf="signupForm.controls['email'].hasError('email')">
+            Please enter a valid email address
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="input-field">
+          <mat-label>{{ authConstant.PASSWORD }}</mat-label>
+          <input matInput formControlName="password" [type]="'password'" required />
+          <mat-icon matSuffix>lock</mat-icon>
+          <mat-error *ngIf="signupForm.controls['password'].hasError('required')">
+            {{ authConstant.PASSWORD_REQUIRED }}
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="input-field">
+          <mat-label>{{ authConstant.COMPANY }}</mat-label>
+          <input matInput formControlName="company" required />
+          <mat-icon matSuffix>business</mat-icon>
+          <mat-error *ngIf="signupForm.controls['company'].hasError('required')">
+            {{ authConstant.COMPANY_REQUIRED }}
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="input-field">
+          <mat-label>{{ authConstant.TEL }}</mat-label>
+          <input matInput formControlName="tel" required type="tel" />
+          <mat-icon matSuffix>phone</mat-icon>
+          <mat-error *ngIf="signupForm.controls['tel'].hasError('required')">
+            {{ authConstant.TEL_REQUIRED }}
+          </mat-error>
+          <mat-error *ngIf="signupForm.controls['tel'].hasError('pattern')">
+            Please enter a valid 10-digit phone number
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="input-field">
+          <mat-label>{{ authConstant.LANGUAGE }}</mat-label>
+          <mat-select formControlName="language" required>
+            <mat-option *ngFor="let lang of languages" [value]="lang.value">
+              {{ lang.viewValue }}
+            </mat-option>
+          </mat-select>
+          <mat-icon matSuffix>language</mat-icon>
+          <mat-error *ngIf="signupForm.controls['language'].hasError('required')">
+            {{ authConstant.LANGUAGE_REQUIRED }}
+          </mat-error>
+        </mat-form-field>
+
+        <div class="button-container">
+          <button mat-raised-button color="primary" type="submit" [disabled]="signupForm.invalid">
+            {{ authConstant.SIGNUP }}
+          </button>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+</div>

@@ -1,0 +1,156 @@
+<div class="dashboard">
+   <app-aside></app-aside>
+
+    <main class="main-content" >
+        <header class="top-bar">
+            <div class="breadcrumb">
+                <mat-icon>home</mat-icon>
+                <span>Rooms</span>
+                <button class="btn-secondary" (click)="goToAreas()">Go to Areas</button>
+            </div>
+            <div class="header-right">
+                <!-- <select class="language-select">
+                    <option>English</option>
+                </select>
+                <div class="user-profile">
+                    <span>Eya</span>
+                    <mat-icon>expand_more</mat-icon> -->
+                <!-- </div> -->
+            </div>
+        </header>
+
+        <div class="content">
+            <h1>Rooms</h1>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <mat-icon>meeting_room</mat-icon>
+                    <div class="stat-content">
+                        <h3>Total Rooms</h3>
+                        <div class="stat-value">{{rooms.length}}</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <mat-icon>devices</mat-icon>
+                    <div class="stat-content">
+                        <h3>Total Devices</h3>
+                        <div class="stat-value">{{devices.length}}</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="dashboard-container">
+                <div class="dashboard-header">
+                  <div class="left-controls">
+                    <button class="btn-primary" [class.active]="!showDevices" (click)="toggleView(false)">Room Details</button>
+                    <button class="btn-secondary" [class.active]="showDevices" (click)="toggleView(true)">Devices</button>
+                  </div>
+                  <div class="right-controls">
+                    <div class="search-wrapper">
+                      <input type="text" placeholder="Search" class="search-input">
+                      <button class="clear-search">×</button>
+                    </div>
+                    <button class="btn-add" *ngIf="isAdmin" (click)="openAddDialog()">Add Room</button>
+                  </div>
+                </div>
+              
+                <!-- Rooms Table -->
+                <table class="device-table" *ngIf="!showDevices">
+                  <thead>
+                    <tr>
+                      <th>NAME</th>
+                      <th>DESCRIPTION</th>
+                      <th>DEVICES</th>
+                      <th>CREATED</th>
+                      <th>UPDATED</th>
+                      <th></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let room of rooms">
+                      <td>
+                        <div class="room-name" style="cursor: pointer;" (click)="selectRoom(room)">{{ room.name }}</div>
+                      </td>
+                      <td>{{ room.description || 'No description' }}</td>
+                      <td>{{ room.devices?.length || 0 }} devices</td>
+                      <td>
+                        <div class="timestamp">{{ room.createdAt | date:'short' }}</div>
+                      </td>
+                      <td>
+                        <div class="timestamp">{{ room.updatedAt | date:'short' }}</div>
+                      </td>
+                      <td>
+                        <div class="action-buttons" *ngIf="isAdmin">
+                          <button class="action-btn edit" (click)="openEditDialog(room)"></button>
+                          <button class="action-btn delete" (click)="openDeleteDialog(room)"></button>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr *ngIf="!isAdmin && rooms.length === 0">
+                      <td colspan="6" class="text-center">
+                        <div class="alert alert-info">
+                          You need admin privileges to manage rooms. Please contact your administrator for access.
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+
+                <!-- Devices View -->
+                <div *ngIf="showDevices">
+                  <div class="selected-room-info" *ngIf="selectedRoom">
+                    <h2>Devices in {{ selectedRoom.name }}</h2>
+                  </div>
+
+                  <div *ngIf="errorMessage" class="error-message">
+                    {{ errorMessage }}
+                  </div>
+
+                  <div *ngIf="isLoading" class="loading-spinner">
+                    <mat-spinner diameter="30"></mat-spinner>
+                    <span class="loading-text">Loading devices...</span>
+                  </div>
+
+                  <table class="device-table" *ngIf="!isLoading">
+                    <thead>
+                      <tr>
+                        <th>NAME</th>
+                        <th>TYPE</th>
+                        <th>STATUS</th>
+                        <th>CREATED</th>
+                        <th>UPDATED</th>
+                        <th></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let device of devices">
+                        <td>{{ device.name }}</td>
+                        <td>{{ device.type }}</td>
+                        <td>{{ device.status }}</td>
+                        <td>
+                          <div class="timestamp">{{ device.createdAt | date:'short' }}</div>
+                        </td>
+                        <td>
+                          <div class="timestamp">{{ device.updatedAt | date:'short' }}</div>
+                        </td>
+                        <td>
+                          <div class="action-buttons" *ngIf="isAdmin">
+                            <button class="action-btn edit"></button>
+                            <button class="action-btn delete"></button>
+                          </div>
+                        </td>
+                      </tr>
+                      <tr *ngIf="!isAdmin">
+                        <td colspan="6" class="text-center">
+                          <div class="alert alert-info">
+                            You need admin privileges to manage devices and rooms. Please contact your administrator for access.
+                          </div>
+                        </td>
+                      </tr>
+                      <tr *ngIf="devices.length === 0 && isAdmin">
+                        <td colspan="6" class="text-center">
+                          {{ errorMessage || 'No devices found in this room' }}
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>

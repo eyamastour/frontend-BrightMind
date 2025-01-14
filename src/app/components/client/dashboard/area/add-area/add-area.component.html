@@ -1,0 +1,55 @@
+<!-- Modal Container -->
+<div class="modal-overlay">
+    <div class="modal-content">
+      <!-- Header -->
+      <div class="modal-header">
+        <div class="header-left">
+            <svg class="add-icon" viewBox="0 0 24 24" width="20" height="20">
+                <path d="M12 5v14m7-7H5" stroke="currentColor" fill="none" stroke-width="2"/>
+              </svg>
+              
+          <span>Add Device</span>
+        </div>
+        <button class="close-btn" (click)="closeDialog()">×</button>
+      </div>
+  
+      <!-- Form Content -->
+      <div class="modal-body">
+        <!-- Single field -->
+        <div class="form-field full-width">
+          <label>Name</label>
+          <input matInput [(ngModel)]="newDevice.name" name="name" required />
+        </div>
+  
+        <!-- Two columns -->
+        <div class="form-row" >
+          <div class="form-field">
+            <mat-form-field>
+              <mat-select [(ngModel)]="newDevice.deviceType" name="deviceType">
+                <mat-option value="actuator">Actuator</mat-option>
+                <mat-option value="sensor">Sensor</mat-option>
+              </mat-select>
+            </mat-form-field>            
+          </div>
+          <div class="form-field">
+            <label>Zone</label>
+            <input matInput [(ngModel)]="newDevice.zone" name="zone" required />
+            <input type="hidden" [(ngModel)]="newDevice.installationId" name="installationId">
+          </div>
+        </div>
+      </div>
+  
+      <!-- Footer -->
+      <!-- Footer -->
+<div class="modal-footer">
+  <button class="save-btn" (click)="addDevice()" [disabled]="!newDevice.name || !newDevice.zone || !newDevice.deviceType">
+    <svg class="add-icon" viewBox="0 0 24 24" width="20" height="20">
+      <path d="M12 5v14m7-7H5" stroke="currentColor" fill="none" stroke-width="2"/>
+    </svg>
+    Add Device
+  </button>
+</div>
+
+    </div>
+  </div>
+  

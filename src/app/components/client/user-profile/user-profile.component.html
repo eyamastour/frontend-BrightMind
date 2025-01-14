@@ -1,0 +1,100 @@
+<div class="page-container">
+  <app-aside></app-aside>
+
+
+  <div class="education-pattern"></div>
+
+  <main class="main-content">
+      <header class="top-bar">
+          <div class="header-right">
+              <!-- <select class="language-select">
+                  <option>English</option>
+              </select>
+              <div class="user-profile">
+                  <span>{{ userConnected?.username }}!</span>
+                  <mat-icon>expand_more</mat-icon>
+              </div> -->
+          </div>
+      </header>
+
+      <div class="content-container">
+        <div class="profile-header" *ngIf="user">
+          <div class="profile-image-container">
+            <img [src]="profileImage" alt="Profile" class="profile-image"/>
+            <div class="status-badge" [ngClass]="{ 'verified': user?.isVerified, 'unverified': !user?.isVerified }">
+              <mat-icon *ngIf="user?.isVerified">check_circle</mat-icon>
+              <mat-icon *ngIf="!user?.isVerified">cancel</mat-icon>
+            </div>
+          </div>
+          <div class="profile-info">
+            <h1>{{ user?.username }}</h1>
+            <p class="profile-status" *ngIf="!user?.isVerified">Your account is not verified yet.</p>
+            <p class="profile-status" *ngIf="user?.isVerified">Your account is verified and ready.</p>
+          </div>
+        </div>
+      
+        <div class="edit-section">
+          <div class="section-header">
+            <h2>Edit Profile</h2>
+            <span class="last-update">Last update: {{ lastUpdateDate }}</span>
+          </div>
+      
+          <div class="form-container">
+            <div class="tabs">
+              <div class="tab active">Personal</div>
+            </div>
+      
+            <div class="form-grid" *ngIf="user">
+              <div class="form-column">
+                <div class="form-group">
+                  <label>First Name</label>
+                  <input type="text" [(ngModel)]="user.firstName" class="form-input"/>
+                </div>
+                <div class="form-group">
+                  <label>Last Name</label>
+                  <input type="text" [(ngModel)]="user.lastName" class="form-input"/>
+                </div>
+                <div class="form-group">
+                  <label>Date of birth</label>
+                  <input type="date" [(ngModel)]="user.dateOfBirth" class="form-input"/>
+                </div>
+                <div class="form-group">
+                  <label>Role</label>
+                  <select [(ngModel)]="user.role" class="form-input">
+                    <option value="user">User</option>
+                    <option value="admin">Admin</option>
+                  </select>
+                </div>
+              </div>
+      
+              <div class="form-column">
+                <div class="form-group">
+                  <label>Email</label>
+                  <input type="email" [(ngModel)]="user.email" class="form-input"/>
+                </div>
+                <div class="form-group">
+                  <label>Phone Number</label>
+                  <input type="text" [(ngModel)]="user.phone" class="form-input"/>
+                </div>
+                <div class="form-group">
+                  <label>Language</label>
+                  <select [(ngModel)]="user.language" class="form-input">
+                    <option value="francais">francais</option>
+                    <option value="anglais">anglais</option>
+                    <option value="italien">italien</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label>Company</label>
+                  <input type="text" [(ngModel)]="user.company" class="form-input"/>
+                </div>
+              </div>
+            </div>
+      
+            <button class="save-button" (click)="saveProfile()">Save</button>
+          </div>
+        </div>
+      </div>
+      
+  </main>
+</div>
