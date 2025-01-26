@@ -36,12 +36,17 @@
         </mat-form-field>
 
         <mat-form-field appearance="outline" class="input-field">
-          <mat-label>{{ authConstant.TEL }}</mat-label>
-          <input matInput formControlName="tel" required type="tel" />
+          <input
+            matInput
+            #phoneInput
+            type="tel"
+            id="phone"
+            name="phone"
+            class="form-control"
+            formControlName="tel"
+          >
           <mat-icon matSuffix>phone</mat-icon>
-          <mat-error *ngIf="signupForm.controls['tel'].hasError('required')">
-            {{ authConstant.TEL_REQUIRED }}
-          </mat-error>
+
           <mat-error *ngIf="signupForm.controls['tel'].hasError('pattern')">
             Please enter a valid 10-digit phone number
           </mat-error>

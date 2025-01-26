@@ -75,3 +75,17 @@
   .nav-item.active {
     background-color: rgba(255, 255, 255, 0.1);
   }
+
+  .nav-menu a:link, 
+.nav-menu a:visited {
+  color: inherit; /* Use the current text color or specify your preferred color */
+  text-decoration: none; /* Optional: Remove any underline effect */
+}
+
+.nav-menu a:hover {
+  color: #007bff; /* Optional: Add a hover effect */
+}
+
+.nav-menu a.active {
+  font-weight: bold; /* Optional: Differentiate active links */
+}

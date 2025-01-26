@@ -18,7 +18,7 @@ import { AsideComponent } from '../../../shared/aside/aside.component';
     FormsModule,
     AsideComponent
   ],
-  templateUrl: 'src/app/components/client/user-profile/user-profile.component.html',
+  templateUrl: './user-profile.component.html',
   styleUrls: ['./user-profile.component.css']
 })
 export class UserProfileComponent implements OnInit {

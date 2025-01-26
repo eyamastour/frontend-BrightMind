@@ -7,22 +7,21 @@
             <mat-icon>home</mat-icon>
             Installations
         </a>
-        <a class="nav-item" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
-            <mat-icon>calendar_today</mat-icon>
-            User Permission
+        <a class="nav-item" routerLink="/client/permissions" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+            <mat-icon>people</mat-icon>
+            Permissions
         </a>
         <a class="nav-item" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
             <mat-icon>storage</mat-icon>
             Data graph
         </a>
-        <a class="nav-item" routerLink="/client/profil" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+        <!-- <a class="nav-item" routerLink="/client/profil" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
             <mat-icon>person</mat-icon>
             User Profile
-        </a>
+        </a> -->
     </nav>
     <!-- Logout Button -->
     <button class="logout-button" (click)="onLogout()">
-        <mat-icon>logout</mat-icon>
-        Logout
+
     </button>
 </aside>

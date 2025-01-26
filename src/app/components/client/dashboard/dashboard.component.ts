@@ -11,9 +11,11 @@ import { MatDialog } from '@angular/material/dialog';
 import { AddInstallationComponent } from './installation/add-installation/add-installation.component';
 import { InstallationService } from '../../../core/services/installation.service';
 import { AsideComponent } from '../../../shared/aside/aside.component';
+import { MatMenu, MatMenuItem, MatMenuTrigger } from "@angular/material/menu";
+
 @Component({
   selector: 'app-dashboard',
-  imports: [CommonModule, MatIconModule, RouterModule, AsideComponent, EditInstallationComponent, FormsModule],
+  imports: [MatMenuTrigger, MatMenuItem, CommonModule, MatIconModule, RouterModule, AsideComponent, EditInstallationComponent, FormsModule, MatMenu],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css'
 })
@@ -119,8 +121,10 @@ refreshInstallations(): void {
       }
     });
   }
-  onLogout() {
+  signOut() {
     this.authService.logout();  
     this.router.navigate(['/login']);  
   }
+
+  
 }

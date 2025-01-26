@@ -9,13 +9,28 @@
                 <span>Installations</span>
             </div>
             <div class="header-right">
-                <!-- <select class="language-select">
-                    <option>English</option>
-                </select> -->
-                <!-- <div class="user-profile">
-                    <span>Eya</span>
-                    <mat-icon>expand_more</mat-icon>
-                </div> -->
+                <div class="user-profile">
+                    <div class="user-avatar" [matMenuTriggerFor]="profileMenu">
+                      <img src="./assets/UserAvatar.png" alt="User Avatar">
+                    </div>
+                  </div>
+            
+                  <mat-menu #profileMenu="matMenu" class="profile-menu">
+                    <div class="profile-header">
+                      <div class="name">User</div>
+                    </div>
+            
+                    <button mat-menu-item [routerLink]="'/client/profil'">
+                        <mat-icon>person_outline</mat-icon>
+                      <span>My Profile</span>
+                    </button>
+
+            
+                    <button mat-menu-item (click)="signOut()">
+                      <mat-icon>logout</mat-icon>
+                      <span>Logout</span>
+                    </button>
+                  </mat-menu>
             </div>
         </header>
 
@@ -67,10 +82,10 @@
                             <mat-icon>business</mat-icon>
                             {{ installation.parent }}
                         </span>
-                        <!-- <div class="item-actions">
+                        <div class="item-actions">
                             <button class="action-btn edit" (click)="openEditDialog(installation); $event.stopPropagation()"></button>
                             <button class="action-btn delete"   (click)="openDeleteDialog(installation._id)"></button>
-                        </div> -->
+                        </div>
                     </div>
                     <div class="tree-item child"   >
                         <span class="item-name"(click)="goToInstallationDetails(installation._id)">

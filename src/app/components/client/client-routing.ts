@@ -6,14 +6,13 @@ import { LoginComponent } from '../authentification/login/login.component';
 import { AddAreaComponent } from './dashboard/area/add-area/add-area.component';
 import { UserProfileComponent } from './user-profile/user-profile.component';
 import { AreasZoneComponent } from './dashboard/areas-zone/areas-zone.component';
+import { UserPermissionComponent } from './user-permission/user-permission.component';
 
 export const ClientRouting: Routes = [
   { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
   {
     path: 'dashboard',
-    component: DashboardComponent,
-    canActivate: [AuthGuard], // Protège cette route
-  },
+    component: DashboardComponent  },
   {
     path: 'areas-zone/:installationId',
     component: AreasZoneComponent,
@@ -30,7 +29,6 @@ export const ClientRouting: Routes = [
   },
 
   { path: 'profil', component: UserProfileComponent },
-
-
+  { path: 'permissions', component: UserPermissionComponent, canActivate: [AuthGuard] },
   { path: 'login', component: LoginComponent },
 ];

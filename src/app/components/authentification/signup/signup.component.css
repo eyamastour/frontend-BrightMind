@@ -50,6 +50,14 @@ mat-card-content {
 .input-field {
   width: 100%;
 }
+.input-field {
+  width: 100%; /* Ensure it takes full width */
+  margin-bottom: 16px; /* Add spacing below */
+}
+
+.mat-form-field {
+  display: block; /* Ensure the field displays properly */
+}
 
 mat-form-field {
   width: 100%;

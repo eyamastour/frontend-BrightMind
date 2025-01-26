@@ -1,0 +1,81 @@
+<div class="dashboard">
+  <app-aside></app-aside>
+  <main class="main-content" >
+    <header class="top-bar">
+      <div class="breadcrumb">
+          <mat-icon>home</mat-icon>
+          <span>User Permisions</span>
+      </div>
+      <div class="header-right">
+          <div class="user-profile">
+              <div class="user-avatar" [matMenuTriggerFor]="profileMenu">
+                <img src="./assets/UserAvatar.png" alt="User Avatar">
+              </div>
+            </div>
+      
+            <mat-menu #profileMenu="matMenu" class="profile-menu">
+              <button mat-menu-item (click)="signOut()">
+                <mat-icon>logout</mat-icon>
+                <span>Logout</span>
+              </button>
+            </mat-menu>
+      </div>
+  </header>
+
+  <div class="content">
+    <h1>User Permisions</h1>
+    <div class="bg-white">
+      <div *ngIf="loading" class="text-center">
+        <div class="loading-spinner"></div>
+      </div>
+
+      <div *ngIf="error" class="error-message">
+        {{ error }}
+      </div>
+
+      <div *ngIf="!loading && !error">
+        <table>
+          <thead>
+            <tr>
+              <th>Username</th>
+              <th>Email</th>
+              <th>Rôle</th>
+              <th>Statut</th>
+            </tr>
+          </thead>
+          <tbody class="bg-white divide-y divide-gray-200">
+            <tr *ngFor="let user of users">
+              <td>
+                <div class="user-info">
+                  <div class="avatar-container">
+                    <img class="user-avatar" [src]="user.avatar || 'assets/UserAvatar.png'" alt="User avatar">
+                  </div>
+                  <div class="user-details">
+                    <div class="user-name">{{ user.username }}</div>
+                  </div>
+                </div>
+              </td>
+              <td>
+                <div class="user-email">{{ user.email }}</div>
+              </td>
+              <td>
+                <mat-select [(ngModel)]="user.role" (selectionChange)="updateUserRole(user, $event.value)"
+                  class="role-select">
+                  <mat-option *ngFor="let role of availableRoles" [value]="role">
+                    {{ role }}
+                  </mat-option>
+                </mat-select>
+              </td>
+              <td>
+                <span class="status-badge" [ngClass]="user.isVerified ? 'status-active' : 'status-inactive'">
+                  {{ user.isVerified ? 'Actif' : 'Inactif' }}
+                </span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  </main>
+</div>
