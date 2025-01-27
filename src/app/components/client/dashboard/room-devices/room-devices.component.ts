@@ -13,6 +13,7 @@ import { AuthService } from '../../../../core/services/auth';
 import { AddDeviceComponent } from './add-device/add-device.component';
 import { EditDeviceComponent } from './edit-device/edit-device.component';
 import { DeleteDeviceComponent } from './delete-device/delete-device.component';
+import { NotificationDialogComponent } from './notification-dialog/notification-dialog.component';
 
 @Component({
   selector: 'app-room-devices',
@@ -29,7 +30,8 @@ import { DeleteDeviceComponent } from './delete-device/delete-device.component';
     AsideComponent,
     RouterModule,
     EditDeviceComponent,
-    DeleteDeviceComponent
+    DeleteDeviceComponent,
+    NotificationDialogComponent
   ]
 })
 export class RoomDevicesComponent implements OnInit {
@@ -39,6 +41,7 @@ export class RoomDevicesComponent implements OnInit {
   searchTerm: string = '';
   isAdmin: boolean = false;
   isLoading: boolean = false;
+  activeAlarms: Set<string> = new Set();
 
   constructor(
     private route: ActivatedRoute,
@@ -52,6 +55,13 @@ export class RoomDevicesComponent implements OnInit {
     this.roomId = this.route.snapshot.paramMap.get('roomId');
     this.isAdmin = this.authService.isAdmin();
     this.loadDevices();
+    
+    // Set up periodic checks for device values
+    setInterval(() => {
+      this.devices.forEach(device => {
+        this.checkThreshold(device);
+      });
+    }, 5000); // Check every 5 seconds
   }
 
   loadDevices(): void {
@@ -136,9 +146,56 @@ export class RoomDevicesComponent implements OnInit {
   }
 
   openNotificationDialog(device: Device): void {
-    // Implement notification settings dialog
-    console.log('Opening notification dialog for device:', device);
+    const dialogRef = this.dialog.open(NotificationDialogComponent, {
+      width: '400px',
+      data: device
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.deviceService.updateDevice(result._id!, result).subscribe({
+          next: (updatedDevice) => {
+            const index = this.devices.findIndex(d => d._id === updatedDevice._id);
+            if (index !== -1) {
+              this.devices[index] = updatedDevice;
+              this.checkThreshold(updatedDevice);
+            }
+            this.updateFilteredDevices();
+          },
+          error: (error) => {
+            console.error('Error updating device threshold:', error);
+          }
+        });
+      }
+    });
   }
+
+  private checkThreshold(device: Device): void {
+    if (device.threshold && device.value > device.threshold) {
+      if (!this.activeAlarms.has(device._id!)) {
+        this.activeAlarms.add(device._id!);
+        // Update UI to show alarm
+        const alarmCount = this.activeAlarms.size;
+        const alarmElement = document.querySelector('.stat-value') as HTMLElement;
+        if (alarmElement) {
+          alarmElement.textContent = alarmCount.toString();
+        }
+        // You could also implement a notification system here
+        alert(`Alarm: ${device.name}'s value (${device.value}) exceeds threshold (${device.threshold})`);
+      }
+    } else {
+      if (this.activeAlarms.has(device._id!)) {
+        this.activeAlarms.delete(device._id!);
+        // Update UI to show updated alarm count
+        const alarmCount = this.activeAlarms.size;
+        const alarmElement = document.querySelector('.stat-value') as HTMLElement;
+        if (alarmElement) {
+          alarmElement.textContent = alarmCount.toString();
+        }
+      }
+    }
+  }
+
 
   updateFilteredDevices(): void {
     if (!this.searchTerm) {

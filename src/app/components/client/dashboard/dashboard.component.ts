@@ -132,8 +132,15 @@ export class DashboardComponent {
     
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        console.log('Installation updated:', result);
-        this.refreshInstallations();
+        this.installationService.updateInstallation(installation._id, result).subscribe(
+          (updatedInstallation) => {
+            console.log('Installation updated successfully:', updatedInstallation);
+            this.refreshInstallations();
+          },
+          (error) => {
+            console.error('Error updating installation:', error);
+          }
+        );
       }
     });
   }
