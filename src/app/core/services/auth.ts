@@ -42,21 +42,25 @@ export class AuthService {
 
   isAuthenticated(): boolean {
     const token = localStorage.getItem('token') || sessionStorage.getItem('token');
-    console.log("Token retrieved:", token);  // Log du token
+    console.log("Token retrieved:", token);
+    
     if (!token) {
+      console.log("No token found, user is not authenticated.");
       return false;
     }
   
     try {
       const payload = JSON.parse(atob(token.split('.')[1])); // Décodage du token
       const isExpired = payload.exp * 1000 < Date.now(); // Vérification de l'expiration
-      console.log("Token expired:", isExpired); // Log si le token est expiré
+      console.log("Token expired:", isExpired);
       return !isExpired;
     } catch (e) {
-      console.error("Invalid token format:", e);  // Log d'erreur si le token est invalide
+      console.error("Invalid token format:", e);
       return false;
     }
   }
+  
+  
   
   
   

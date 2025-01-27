@@ -67,39 +67,52 @@
 
             <div class="installation-tree">
                 <div class="search-bar">
-                    <input type="text" placeholder="Search installation" [(ngModel)]="searchTerm" (ngModelChange)="onSearch()">
-                    <select class="filter-select">
-                        <option>All</option>
-                    </select>
-                    <button class="add-button" (click)="openAddDialog()">
-                        Add
-                    </button>
+                  <input type="text" placeholder="Search installation" [(ngModel)]="searchTerm" (ngModelChange)="onSearch()">
+                  <select class="filter-select">
+                    <option>All</option>
+                  </select>
+                  <button class="add-button" (click)="openAddDialog()">
+                    Add
+                  </button>
                 </div>
-
+              
                 <div class="tree" *ngFor="let installation of filteredInstallations">
                     <div class="tree-item root">
-                        <span class="item-name">
-                            <mat-icon>business</mat-icon>
-                            {{ installation.parent }}
-                        </span>
-                        <div class="item-actions">
-                            <button class="action-btn edit" (click)="openEditDialog(installation); $event.stopPropagation()"></button>
-                            <button class="action-btn delete"   (click)="openDeleteDialog(installation._id)"></button>
-                        </div>
+                      <span class="item-name" (click)="goToInstallationRooms(installation._id)">
+                        <mat-icon>business</mat-icon>
+                        {{ installation.name }}
+                      </span>
+                      <div class="item-actions">
+                        <button class="action-btn edit" (click)="openEditDialog(installation); $event.stopPropagation()">
+                          <mat-icon>edit</mat-icon>
+                        </button>
+                        <button class="action-btn delete" (click)="openDeleteDialog(installation); $event.stopPropagation()">
+                          <mat-icon>delete</mat-icon>
+                        </button>
+                      </div>
                     </div>
-                    <div class="tree-item child"   >
-                        <span class="item-name"(click)="goToInstallationDetails(installation._id)">
-                            <mat-icon>router</mat-icon>
-                            {{ installation.name }}
-                        </span>
-                        
-                        <div class="item-actions">
-                            <button class="action-btn edit" (click)="openEditDialog(installation); $event.stopPropagation()"></button>
-                            <button class="action-btn delete" (click)="openDeleteDialog(installation._id); $event.stopPropagation()"></button>
+                  
+                    <!-- Ajoutez cette section si vous voulez que les rooms soient aussi cliquables -->
+                    <div class="tree-item child" *ngFor="let room of installation.rooms">
+                      <span class="item-name">
+                        <mat-icon>router</mat-icon>
+                        {{ room.name }}
+                      </span>
+                      <!-- <div class="item-actions">
+                        <button class="action-btn edit" (click)="openEditDialog(room); $event.stopPropagation()"></button>
+                        <button class="action-btn delete" (click)="openDeleteDialog(room._id); $event.stopPropagation()"></button>
+                      </div> -->
+                      <!-- Affichage des appareils pour chaque room -->
+                      <div class="device-list" *ngIf="room.devices">
+                        <div class="device" *ngFor="let device of room.devices">
+                          <span>{{ device.name }}</span>
                         </div>
+                      </div>
                     </div>
-                </div>
-            </div>
+                  </div>
+                  
+              </div>
+              
         </div>
 
     </main>

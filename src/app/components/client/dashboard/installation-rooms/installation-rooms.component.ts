@@ -1,0 +1,221 @@
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
+import { InstallationService } from '../../../../core/services/installation.service';
+import { MatIconModule } from '@angular/material/icon';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { Room } from '../../../../core/models/room.model';
+import { MatMenuModule } from '@angular/material/menu';
+import { AsideComponent } from '../../../../shared/aside/aside.component';
+import { AuthService } from '../../../../core/services/auth';
+import { MatDialog } from '@angular/material/dialog';
+import { AddInstallationComponent } from '../installation/add-installation/add-installation.component';
+import { EditInstallationComponent } from '../installation/edit-installation/edit-installation.component';
+import { DeleteInstallationComponent } from '../installation/delete-installation/delete-installation.component';
+import { AddRoomComponent } from '../areas-zone/add-room/add-room.component';
+import { EditRoomComponent } from '../areas-zone/edit-room/edit-room.component';
+import { DeleteRoomComponent } from '../areas-zone/delete-room/delete-room.component';
+
+interface RoomWithId extends Room {
+  _id: string;
+}
+
+@Component({
+  selector: 'app-installation-rooms',
+  templateUrl: './installation-rooms.component.html',
+  styleUrls: ['./installation-rooms.component.css'],
+  standalone: true,
+  imports: [MatIconModule, CommonModule, FormsModule, MatMenuModule, AsideComponent, RouterModule]
+})
+export class InstallationRoomsComponent implements OnInit {
+  rooms: Room[] = [];
+  filteredRooms: Room[] = [];
+  installationId: string | null = null;
+  searchTerm: string = '';
+
+  constructor(
+    private route: ActivatedRoute,
+    private router: Router,
+    private installationService: InstallationService,
+    private authService: AuthService,
+    private dialog: MatDialog
+  ) {}
+
+  ngOnInit(): void {
+    this.loadRooms();
+  }
+
+  loadRooms(): void {
+    this.installationId = this.route.snapshot.paramMap.get('installationId');
+    
+    if (this.installationId) {
+      this.installationService.getRoomsByInstallation(this.installationId).subscribe(
+        (rooms) => {
+          this.rooms = rooms;
+          this.updateFilteredRooms();
+        },
+        (error: any) => {
+          console.error('Error fetching rooms:', error);
+        }
+      );
+    } else {
+      console.error('Installation ID is not provided');
+    }
+  }
+
+  openAddInstallationDialog(): void {
+    const dialogRef = this.dialog.open(AddInstallationComponent);
+    
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.installationService.addInstallation(result).subscribe(
+          () => {
+            this.loadRooms();
+          },
+          (error: any) => {
+            console.error('Error adding installation:', error);
+          }
+        );
+      }
+    });
+  }
+
+  openEditInstallationDialog(installation: any): void {
+    if (!installation._id) return;
+
+    const dialogRef = this.dialog.open(EditInstallationComponent, {
+      data: installation
+    });
+    
+    dialogRef.afterClosed().subscribe(result => {
+      if (result && result._id) {
+        this.installationService.updateInstallation(result._id, result).subscribe(
+          () => {
+            this.loadRooms();
+          },
+          (error: any) => {
+            console.error('Error updating installation:', error);
+          }
+        );
+      }
+    });
+  }
+
+  openDeleteInstallationDialog(installation: any): void {
+    if (!installation._id) return;
+
+    const dialogRef = this.dialog.open(DeleteInstallationComponent, {
+      data: installation
+    });
+    
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.installationService.deleteInstallation(installation._id).subscribe(
+          () => {
+            this.router.navigate(['/client/dashboard']);
+          },
+          (error: any) => {
+            console.error('Error deleting installation:', error);
+          }
+        );
+      }
+    });
+  }
+
+  openAddRoomDialog(): void {
+    if (!this.installationId) return;
+
+    const dialogRef = this.dialog.open(AddRoomComponent, {
+      data: { installationId: this.installationId }
+    });
+    
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.installationService.createRoom(result).subscribe(
+          () => {
+            this.loadRooms();
+          },
+          (error: any) => {
+            console.error('Error adding room:', error);
+          }
+        );
+      }
+    });
+  }
+
+  openEditRoomDialog(room: Room): void {
+    if (!this.isRoomWithId(room)) return;
+
+    const dialogRef = this.dialog.open(EditRoomComponent, {
+      data: room
+    });
+    
+    dialogRef.afterClosed().subscribe(result => {
+      if (result && this.isRoomWithId(result)) {
+        this.installationService.updateRoom(result._id, result).subscribe(
+          () => {
+            this.loadRooms();
+          },
+          (error: any) => {
+            console.error('Error updating room:', error);
+          }
+        );
+      }
+    });
+  }
+
+  openDeleteRoomDialog(room: Room): void {
+    if (!this.isRoomWithId(room)) return;
+
+    const dialogRef = this.dialog.open(DeleteRoomComponent, {
+      data: room
+    });
+    
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.installationService.deleteRoom(room._id).subscribe(
+          () => {
+            this.loadRooms();
+          },
+          (error: any) => {
+            console.error('Error deleting room:', error);
+          }
+        );
+      }
+    });
+  }
+
+  private isRoomWithId(room: Room): room is RoomWithId {
+    return room._id !== undefined;
+  }
+
+  signOut(): void {
+    this.authService.logout();
+    this.router.navigate(['/auth/login']);
+  }
+
+  getTotalDevices(): number {
+    return this.rooms.reduce((total, room) => total + (room.devices?.length || 0), 0);
+  }
+
+  updateFilteredRooms(): void {
+    if (!this.searchTerm) {
+      this.filteredRooms = this.rooms;
+      return;
+    }
+
+    const searchTermLower = this.searchTerm.toLowerCase();
+    this.filteredRooms = this.rooms.filter(room => 
+      room.name.toLowerCase().includes(searchTermLower) ||
+      (room.description && room.description.toLowerCase().includes(searchTermLower))
+    );
+  }
+
+  ngDoCheck(): void {
+    this.updateFilteredRooms();
+  }
+
+  viewDevices(roomId: string): void {
+    this.router.navigate(['/client/rooms', roomId, 'devices']);
+  }
+}

@@ -1,76 +1,76 @@
 import { Component, Inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { InstallationService } from '../../../../../core/services/installation.service';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { CommonModule } from '@angular/common';
+import { Installation } from '../../../../../core/models/installation';
 
 @Component({
   selector: 'app-edit-installation',
-  standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, MatButtonModule, MatFormFieldModule, MatInputModule],
   template: `
     <h2 mat-dialog-title>Edit Installation</h2>
-    <form [formGroup]="editForm" (ngSubmit)="onSubmit()">
-      <mat-form-field appearance="fill">
-        <mat-label>Installation Name</mat-label>
-        <input matInput formControlName="name" required>
-      </mat-form-field>
-      <div mat-dialog-actions>
-        <button mat-button (click)="onCancel()">Cancel</button>
-        <button mat-button color="primary" type="submit" [disabled]="!editForm.valid">Save</button>
+    <form [formGroup]="installationForm" (ngSubmit)="onSubmit()">
+      <div mat-dialog-content>
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Installation Name</mat-label>
+          <input matInput formControlName="name" placeholder="Enter installation name">
+          <mat-error *ngIf="installationForm.get('name')?.hasError('required')">
+            Name is required
+          </mat-error>
+        </mat-form-field>
+      </div>
+      <div mat-dialog-actions align="end">
+        <button mat-button type="button" (click)="onCancel()">Cancel</button>
+        <button mat-raised-button color="primary" type="submit" [disabled]="!installationForm.valid">
+          Update Installation
+        </button>
       </div>
     </form>
   `,
   styles: [`
-    form {
-      display: flex;
-      flex-direction: column;
-      padding: 20px;
-    }
-    mat-form-field {
+    .full-width {
       width: 100%;
-      margin-bottom: 20px;
+      margin-bottom: 15px;
     }
-    [mat-dialog-actions] {
-      justify-content: flex-end;
-      gap: 8px;
+    mat-dialog-content {
+      min-width: 350px;
     }
-  `]
+  `],
+  standalone: true,
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    MatButtonModule,
+    MatFormFieldModule,
+    MatInputModule
+  ]
 })
 export class EditInstallationComponent {
-  editForm: FormGroup;
+  installationForm: FormGroup;
 
   constructor(
     private fb: FormBuilder,
-    private installationService: InstallationService,
     private dialogRef: MatDialogRef<EditInstallationComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: { installation: any }
+    @Inject(MAT_DIALOG_DATA) public data: Installation
   ) {
-    this.editForm = this.fb.group({
-      name: [data.installation.name, Validators.required]
+    this.installationForm = this.fb.group({
+      name: [data.name, Validators.required]
     });
   }
 
-  onSubmit() {
-    if (this.editForm.valid) {
-      this.installationService.updateInstallation(
-        this.data.installation._id,
-        this.editForm.value
-      ).subscribe({
-        next: (result) => {
-          this.dialogRef.close(result);
-        },
-        error: (error) => {
-          console.error('Error updating installation:', error);
-        }
-      });
+  onSubmit(): void {
+    if (this.installationForm.valid) {
+      const updatedInstallation = {
+        ...this.data,
+        ...this.installationForm.value
+      };
+      this.dialogRef.close(updatedInstallation);
     }
   }
 
-  onCancel() {
+  onCancel(): void {
     this.dialogRef.close();
   }
 }

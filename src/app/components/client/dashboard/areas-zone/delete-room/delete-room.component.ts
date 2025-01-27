@@ -2,20 +2,20 @@ import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { CommonModule } from '@angular/common';
-import { Installation } from '../../../../../core/models/installation';
+import { Room } from '../../../../../core/models/room.model';
 
 @Component({
-  selector: 'app-delete-installation',
+  selector: 'app-delete-room',
   template: `
-    <h2 mat-dialog-title>Delete Installation</h2>
+    <h2 mat-dialog-title>Delete Room</h2>
     <div mat-dialog-content>
-      <p>Are you sure you want to delete the installation "{{ data.name }}"?</p>
-      <p class="warning">This action cannot be undone. All associated rooms and devices will also be deleted.</p>
+      <p>Are you sure you want to delete the room "{{ data.name }}"?</p>
+      <p class="warning">This action cannot be undone. All associated devices will also be deleted.</p>
     </div>
     <div mat-dialog-actions align="end">
       <button mat-button (click)="onCancel()">Cancel</button>
       <button mat-raised-button color="warn" (click)="onConfirm()">
-        Delete Installation
+        Delete Room
       </button>
     </div>
   `,
@@ -34,10 +34,10 @@ import { Installation } from '../../../../../core/models/installation';
     MatButtonModule
   ]
 })
-export class DeleteInstallationComponent {
+export class DeleteRoomComponent {
   constructor(
-    private dialogRef: MatDialogRef<DeleteInstallationComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: Installation
+    private dialogRef: MatDialogRef<DeleteRoomComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: Room
   ) {}
 
   onConfirm(): void {

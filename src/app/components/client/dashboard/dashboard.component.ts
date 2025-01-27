@@ -24,84 +24,110 @@ export class DashboardComponent {
   filteredInstallations: any[] = [];
   searchTerm: string = '';
   installationId: string | null = null;
-    constructor(private installationService: InstallationService,private dialog: MatDialog,private router: Router, private authService: AuthService,private route: ActivatedRoute) {}
 
-    ngOnInit(): void {
-      this.installationService.getInstallations().subscribe(
-        (data) => {
-          console.log('Installations data:', data);
-          data.forEach((installation, index) => {
-            console.log(`Installation ${index}:`, installation);
-          });
-          this.installations = data;
-          this.filteredInstallations = data;
-        },
-        (error) => {
-          console.error('Error fetching installations:', error);
-        }
-      );
-    }
+  constructor(
+    private installationService: InstallationService,
+    private dialog: MatDialog,
+    private router: Router,
+    private authService: AuthService,
+    private route: ActivatedRoute
+  ) {}
 
-    onSearch(): void {
-      if (!this.searchTerm.trim()) {
-        this.filteredInstallations = this.installations;
-        return;
-      }
-      
-      const searchTermLower = this.searchTerm.toLowerCase().trim();
-      this.filteredInstallations = this.installations.filter(installation => 
-        installation.name.toLowerCase().includes(searchTermLower) ||
-        installation.parent.toLowerCase().includes(searchTermLower)
-      );
-    }
-    
-    
+  ngOnInit(): void {
+    this.installationService.getInstallations().subscribe(
+      (data) => {
+        console.log('Installations data:', data);
+        this.installations = data;
+        this.filteredInstallations = data;
   
-goToInstallationDetails(installationId: string): void {
-  if (installationId) {
-    this.router.navigate(['/client/areas', installationId]);
-  } else {
-    console.error('Installation ID is undefined or null');
+        // Charger les rooms pour chaque installation
+        this.installations.forEach(installation => {
+          this.installationService.getRoomsByInstallation(installation._id).subscribe(
+            (rooms) => {
+              console.log(`Rooms for installation ${installation._id}:`, rooms);
+              installation.rooms = rooms; // Ajoute les rooms à l'installation
+            },
+            (error) => {
+              console.error(`Error fetching rooms for installation ${installation._id}:`, error);
+            }
+          );
+        });
+      },
+      (error) => {
+        console.error('Error fetching installations:', error);
+      }
+    );
   }
-}
+  
 
+  onSearch(): void {
+    if (!this.searchTerm.trim()) {
+      this.filteredInstallations = this.installations;
+      return;
+    }
     
-openDeleteDialog(installationId: string): void {
-  console.log('Attempting to open delete dialog with ID:', installationId);
-  if (!installationId) {
-    console.error('Invalid or undefined installation ID:', installationId);
-    return;
+    const searchTermLower = this.searchTerm.toLowerCase().trim();
+    this.filteredInstallations = this.installations.filter(installation => 
+      installation.name.toLowerCase().includes(searchTermLower) ||
+      installation.parent.toLowerCase().includes(searchTermLower)
+    );
   }
 
-  const dialogRef = this.dialog.open(DeleteInstallationComponent, {
-    data: { installationId: installationId }
-  });
-
-  dialogRef.afterClosed().subscribe(result => {
-    if (result) {
-      console.log('Delete operation completed successfully');
-      this.refreshInstallations(); 
+  goToInstallationRooms(installationId: string): void {
+    console.log('Navigating to rooms for installation ID:', installationId);
+    this.router.navigate(['/client/installations', installationId, 'rooms']);
+  }
+  
+  
+  
+  
+  openDeleteDialog(installation: Installation): void {
+    console.log('Attempting to open delete dialog:', installation);
+    if (!installation || !installation._id) {
+      console.error('Invalid installation:', installation);
+      return;
     }
-  });
-}
-refreshInstallations(): void {
-  this.installationService.getInstallations().subscribe(
-    (data) => {
-      console.log('Installations refreshed:', data);
-      this.installations = data;
-      this.onSearch(); // Re-apply current search filter
-    },
-    (error) => {
-      console.error('Error refreshing installations:', error);
+
+    const dialogRef = this.dialog.open(DeleteInstallationComponent, {
+      data: installation
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.installationService.deleteInstallation(installation._id).subscribe(
+          () => {
+            console.log('Delete operation completed successfully');
+            this.refreshInstallations();
+          },
+          (error) => {
+            console.error('Error deleting installation:', error);
+          }
+        );
+      }
+    });
+  }
+
+  refreshInstallations(): void {
+    this.installationService.getInstallations().subscribe(
+      (data) => {
+        console.log('Installations refreshed:', data);
+        this.installations = data;
+        this.onSearch(); // Re-apply current search filter
+      },
+      (error) => {
+        console.error('Error refreshing installations:', error);
+      }
+    );
+  }
+
+  openEditDialog(installation: Installation): void {
+    if (!installation || !installation._id) {
+      console.error('Invalid installation:', installation);
+      return;
     }
-  );
-}
-
-
-
-  openEditDialog(installation: any): void {
+    
     const dialogRef = this.dialog.open(EditInstallationComponent, {
-      data: { installation }
+      data: installation
     });
     
     dialogRef.afterClosed().subscribe(result => {
@@ -121,10 +147,9 @@ refreshInstallations(): void {
       }
     });
   }
+
   signOut() {
     this.authService.logout();  
     this.router.navigate(['/login']);  
   }
-
-  
 }

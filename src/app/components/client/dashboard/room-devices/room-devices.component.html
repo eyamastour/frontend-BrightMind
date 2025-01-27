@@ -1,0 +1,131 @@
+<div class="dashboard">
+   <app-aside></app-aside>
+
+    <main class="main-content" >
+        <header class="top-bar">
+            <div class="breadcrumb">
+                <mat-icon>home</mat-icon>
+                <span>Devices</span>
+            </div>
+            <div class="header-right">
+            </div>
+        </header>
+
+        <div class="content">
+            <h1>Room Devices</h1>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <mat-icon>wifi</mat-icon>
+                    <div class="stat-content">
+                        <h3>Active Devices</h3>
+                        <div class="stat-value">{{devices.length}}/{{devices.length}}</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <mat-icon>notifications</mat-icon>
+                    <div class="stat-content">
+                        <h3>Alarms in Progress</h3>
+                        <div class="stat-value">0</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="dashboard-container">
+                <div class="dashboard-header">
+                  <div class="left-controls">
+                    <button class="btn-primary active">Device Detail</button>
+                  </div>
+                  <div class="right-controls">
+                    <div class="search-wrapper">
+                      <input type="text" placeholder="Search" class="search-input" [(ngModel)]="searchTerm">
+                      <button class="clear-search" *ngIf="searchTerm" (click)="searchTerm = ''">×</button>
+                    </div>
+                    <select class="select-control">
+                      <option>All</option>
+                      <option>Online</option>
+                      <option>Offline</option>
+                    </select>
+                    <select class="select-control">
+                      <option>Zone</option>
+                    </select>
+                    <button class="btn-add" *ngIf="isAdmin" (click)="openAddDialog()">Add</button>
+                  </div>
+                </div>
+              
+                <!-- Loading indicator -->
+                <div class="loading-spinner" *ngIf="isLoading">
+                    <mat-icon class="spin">refresh</mat-icon>
+                    <p>Loading devices...</p>
+                </div>
+
+                <table class="device-table" *ngIf="!isLoading && devices.length > 0; else noDevices">
+                  <thead>
+                    <tr>
+                      <th>STATUS</th>
+                      <th>DEVICE</th>
+                      <th>ZONE</th>
+                      <th>PARAM 1</th>
+                      <th>PARAM 2</th>
+                      <th>PARAM 3</th>
+                      <th>LAST READ</th>
+                      <th></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let device of filteredDevices">
+                      <td>
+                        <span [class]="'status-badge ' + device.status">{{ device.status }}</span>
+                      </td>
+                      <td>
+                        <div class="device-name">{{ device.name }}</div>
+                        <div class="device-model">{{ device.name }}</div>
+                      </td>
+                      <td>{{ device.zone || 'N/A' }}</td>
+                      <td>
+                        <div class="param-value">{{ device.value || 'N/A' }}</div>
+                      </td>
+                      <td>
+                        <div class="param-value">
+                          <div class="toggle-switch">
+                            <div class="toggle-slider" [class.active]="device.enableConnection"></div>
+                          </div>
+                        </div>
+                        <div class="param-label">Enable Connection</div>
+                      </td>
+                      <td>
+                        <div class="param-value">{{ device.type || 'N/A' }}</div>
+                      </td>
+                      <td>
+                        <div class="timestamp">{{ device.lastUpdated | date:'short' }}</div>
+                        <div class="timestamp">09:48:57</div>
+                      </td>
+                      <td>
+                        <div class="action-buttons" *ngIf="isAdmin">
+                          <button class="action-btn edit" (click)="openEditDialog(device)"></button>
+                          <button class="action-btn delete" (click)="openDeleteDialog(device)" matTooltip="Delete Device">
+                            <mat-icon>delete</mat-icon>
+                          </button>
+                          <button class="action-btn notification" (click)="openNotificationDialog(device)"></button>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+
+                <ng-template #noDevices>
+                  <div class="no-data" *ngIf="!isLoading">
+                    <mat-icon>devices</mat-icon>
+                    <p>No devices available for this room.</p>
+                    <button class="btn-add" *ngIf="isAdmin" (click)="openAddDialog()">Add Device</button>
+                  </div>
+                </ng-template>
+
+                <div *ngIf="!isAdmin" class="alert alert-info text-center mt-3">
+                  <p>You need admin privileges to manage devices and installations. Please contact your administrator for access.</p>
+                </div>
+              </div>
+        </div>
+
+    </main>
+</div>

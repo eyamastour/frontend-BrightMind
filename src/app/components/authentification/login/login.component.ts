@@ -49,22 +49,22 @@ export class LoginComponent {
     if (this.signInForm.valid) {
       this.showSpinner = true;
       const { email, password, rememberMe } = this.signInForm.value;
-      
-      // Call the login method from AuthService
+  
       this.authService.login(email, password, rememberMe).subscribe(
         (response) => {
           this.showSpinner = false;
-          console.log('Réponse de l\'API:', response);  // Log de la réponse
-          this.toastrService.success(this.authConstant.LOGIN_SUCCESS)
-          // Save token based on remember me preference
+          this.toastrService.success(this.authConstant.LOGIN_SUCCESS);
           this.authService.saveToken(response.token, rememberMe);
-          console.log('Token enregistré:', localStorage.getItem('token'));  // Vérifie si le token est bien enregistré
-          // Redirection vers le dashboard
+  
+          // Vérifier que le token a bien été sauvegardé
+          const token = rememberMe ? localStorage.getItem('token') : sessionStorage.getItem('token');
+          console.log('Token sauvegardé:', token);  // Vérifier le token
+  
           this.router.navigate(['/client/dashboard']);
-                },
+        },
         (error) => {
           this.showSpinner = false;
-          console.log('Erreur lors de la connexion:', error);  // Log de l'erreur
+          console.error('Erreur lors de la connexion:', error);
           this.toastrService.error('Invalid credentials, please try again.');
         }
       );
@@ -72,4 +72,5 @@ export class LoginComponent {
       this.toastrService.warning('Please fill in the required fields correctly.');
     }
   }
+  
 }
