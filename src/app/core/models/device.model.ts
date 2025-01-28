@@ -9,7 +9,7 @@ export interface Device {
   type: string;
   enableConnection: boolean;
   lastUpdated: Date;
-  value: number;
+  value: number | boolean;
   threshold?: number;
   installationId: string;
   room?: Room;  // Room details when populated

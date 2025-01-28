@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { Device } from '../models/device.model';
+import { DeviceHistory } from '../models/device-history.model';
 
 @Injectable({
   providedIn: 'root'
@@ -42,5 +43,13 @@ export class DeviceService {
 
   updateDevice(deviceId: string, updates: Partial<Device> & { triggerAlarm?: boolean }): Observable<Device> {
     return this.http.put<Device>(`${this.baseUrl}/devices/${deviceId}`, updates);
+  }
+
+  getDeviceHistory(deviceId: string, days: number = 7): Observable<DeviceHistory[]> {
+    return this.http.get<DeviceHistory[]>(`${this.baseUrl}/devices/${deviceId}/history?days=${days}`);
+  }
+
+  getInstallationDevicesHistory(installationId: string, days: number = 7): Observable<DeviceHistory[]> {
+    return this.http.get<DeviceHistory[]>(`${this.baseUrl}/installations/${installationId}/devices/history?days=${days}`);
   }
 }

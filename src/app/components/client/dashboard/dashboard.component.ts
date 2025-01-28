@@ -10,6 +10,7 @@ import { EditInstallationComponent } from './installation/edit-installation/edit
 import { MatDialog } from '@angular/material/dialog';
 import { AddInstallationComponent } from './installation/add-installation/add-installation.component';
 import { InstallationService } from '../../../core/services/installation.service';
+import { DeviceService } from '../../../core/services/device.service';
 import { AsideComponent } from '../../../shared/aside/aside.component';
 import { MatMenu, MatMenuItem, MatMenuTrigger } from "@angular/material/menu";
 
@@ -27,6 +28,7 @@ export class DashboardComponent {
 
   constructor(
     private installationService: InstallationService,
+    private deviceService: DeviceService,
     private dialog: MatDialog,
     private router: Router,
     private authService: AuthService,
@@ -75,11 +77,11 @@ export class DashboardComponent {
 
   goToInstallationRooms(installationId: string): void {
     console.log('Navigating to rooms for installation ID:', installationId);
+    this.installationId = installationId;
+    // Set the installation ID in the device service
+    this.deviceService.setInstallationId(installationId);
     this.router.navigate(['/client/installations', installationId, 'rooms']);
   }
-  
-  
-  
   
   openDeleteDialog(installation: Installation): void {
     console.log('Attempting to open delete dialog:', installation);

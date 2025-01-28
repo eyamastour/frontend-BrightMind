@@ -52,7 +52,7 @@ export class NotificationDialogComponent {
     public dialogRef: MatDialogRef<NotificationDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: Device
   ) {
-    this.threshold = data.threshold || data.value;
+    this.threshold = data.threshold ?? (typeof data.value === 'number' ? data.value : 0);
   }
 
   onCancel(): void {

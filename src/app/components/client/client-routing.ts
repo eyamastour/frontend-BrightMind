@@ -9,6 +9,7 @@ import { AreasZoneComponent } from './dashboard/areas-zone/areas-zone.component'
 import { UserPermissionComponent } from './user-permission/user-permission.component';
 import { InstallationRoomsComponent } from './dashboard/installation-rooms/installation-rooms.component';
 import { RoomDevicesComponent } from './dashboard/room-devices/room-devices.component';
+import { DataGraphComponent } from './dashboard/data-graph/data-graph.component';
 
 export const ClientRouting: Routes = [
   { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
@@ -44,4 +45,9 @@ export const ClientRouting: Routes = [
     component: RoomDevicesComponent,
     canActivate: [AuthGuard]
   },
+  {
+    path: 'data-graph',
+    component: DataGraphComponent,
+    canActivate: [AuthGuard]
+  }
 ];

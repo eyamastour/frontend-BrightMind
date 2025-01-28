@@ -54,7 +54,7 @@ export class NotificationDialogComponent {
     public dialogRef: MatDialogRef<NotificationDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: { device: Device }
   ) {
-    this.newValue = data.device.value || 0;
+    this.newValue = typeof data.device.value === 'number' ? data.device.value : 0;
   }
 
   onCancel(): void {
@@ -62,10 +62,10 @@ export class NotificationDialogComponent {
   }
 
   onUpdate(): void {
-    const previousValue = this.data.device.value || 0;
+    const previousValue = typeof this.data.device.value === 'number' ? this.data.device.value : 0;
     const result = {
       value: this.newValue,
-      triggerAlarm: this.newValue > previousValue
+      triggerAlarm: this.newValue > previousValue && typeof this.data.device.value === 'number'
     };
     this.dialogRef.close(result);
   }

@@ -1,0 +1,48 @@
+<div class="data-graph-container">
+  <div class="controls">
+    <div class="device-selector">
+      <label for="device">Select Device:</label>
+      <select id="device" (change)="onDeviceSelect($event)" [disabled]="isLoading">
+        <option value="" disabled selected *ngIf="devices.length === 0">No devices available</option>
+        <option *ngFor="let device of devices" [value]="device._id">
+          {{ device.name }} ({{ device.type }})
+        </option>
+      </select>
+    </div>
+    
+    <div class="time-range">
+      <label>Time Range:</label>
+      <button 
+        [class.active]="timeRange === 1" 
+        (click)="updateTimeRange(1)"
+        [disabled]="isLoading || !selectedDevice">24h</button>
+      <button 
+        [class.active]="timeRange === 7" 
+        (click)="updateTimeRange(7)"
+        [disabled]="isLoading || !selectedDevice">7d</button>
+      <button 
+        [class.active]="timeRange === 30" 
+        (click)="updateTimeRange(30)"
+        [disabled]="isLoading || !selectedDevice">30d</button>
+    </div>
+  </div>
+
+  <div class="chart-container" [class.loading]="isLoading" [class.error]="hasError">
+    @if (hasError) {
+      <div class="error-message">
+        <p>{{ errorMessage }}</p>
+      </div>
+    } @else if (isLoading) {
+      <div class="loading-spinner">
+        <div class="spinner"></div>
+        <p>Loading data...</p>
+      </div>
+    } @else {
+      <canvas baseChart
+        [data]="lineChartData"
+        [options]="lineChartOptions"
+        [type]="lineChartType">
+      </canvas>
+    }
+  </div>
+</div>

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { InstallationService } from '../../../../core/services/installation.service';
+import { DeviceService } from '../../../../core/services/device.service';
 import { MatIconModule } from '@angular/material/icon';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -15,6 +16,7 @@ import { DeleteInstallationComponent } from '../installation/delete-installation
 import { AddRoomComponent } from '../areas-zone/add-room/add-room.component';
 import { EditRoomComponent } from '../areas-zone/edit-room/edit-room.component';
 import { DeleteRoomComponent } from '../areas-zone/delete-room/delete-room.component';
+import { DataGraphComponent } from '../data-graph/data-graph.component';
 
 interface RoomWithId extends Room {
   _id: string;
@@ -25,7 +27,7 @@ interface RoomWithId extends Room {
   templateUrl: './installation-rooms.component.html',
   styleUrls: ['./installation-rooms.component.css'],
   standalone: true,
-  imports: [MatIconModule, CommonModule, FormsModule, MatMenuModule, AsideComponent, RouterModule]
+  imports: [MatIconModule, CommonModule, FormsModule, MatMenuModule, AsideComponent, RouterModule, DataGraphComponent]
 })
 export class InstallationRoomsComponent implements OnInit {
   rooms: Room[] = [];
@@ -38,7 +40,8 @@ export class InstallationRoomsComponent implements OnInit {
     private router: Router,
     private installationService: InstallationService,
     private authService: AuthService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private deviceService: DeviceService
   ) {}
 
   ngOnInit(): void {
@@ -49,6 +52,9 @@ export class InstallationRoomsComponent implements OnInit {
     this.installationId = this.route.snapshot.paramMap.get('installationId');
     
     if (this.installationId) {
+      // Set the installation ID in the device service
+      this.deviceService.setInstallationId(this.installationId);
+      
       this.installationService.getRoomsByInstallation(this.installationId).subscribe(
         (rooms) => {
           this.rooms = rooms;

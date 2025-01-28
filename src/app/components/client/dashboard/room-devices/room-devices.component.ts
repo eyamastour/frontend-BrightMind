@@ -171,6 +171,11 @@ export class RoomDevicesComponent implements OnInit {
   }
 
   private checkThreshold(device: Device): void {
+    // Only check threshold for sensors (numerical values)
+    if (device.deviceType !== 'sensor' || typeof device.value !== 'number') {
+      return;
+    }
+
     if (device.threshold && device.value > device.threshold) {
       if (!this.activeAlarms.has(device._id!)) {
         this.activeAlarms.add(device._id!);
