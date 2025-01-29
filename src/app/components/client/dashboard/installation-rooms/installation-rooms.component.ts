@@ -182,6 +182,7 @@ export class InstallationRoomsComponent implements OnInit {
         this.installationService.deleteRoom(room._id).subscribe(
           () => {
             this.loadRooms();
+            window.location.reload();
           },
           (error: any) => {
             console.error('Error deleting room:', error);
