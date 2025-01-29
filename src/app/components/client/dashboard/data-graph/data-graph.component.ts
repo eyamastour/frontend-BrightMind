@@ -203,6 +203,20 @@ export class DataGraphComponent implements OnInit, OnDestroy {
 
   public lineChartType: ChartType = 'line';
 
+  private getUnitByDeviceType(type?: string): string {
+    if (!type) return '';
+    switch(type.toLowerCase()) {
+      case 'temperature':
+        return '°C';
+      case 'humidity':
+        return '%';
+      case 'light':
+        return ' lux';
+      default:
+        return '';
+    }
+  }
+
   constructor(private deviceService: DeviceService) {}
 
   ngOnInit(): void {
@@ -296,6 +310,12 @@ export class DataGraphComponent implements OnInit, OnDestroy {
 
     const labels = history.map(h => formatDate(new Date(h.timestamp)));
     
+    // Get the current value (most recent)
+    const currentValue = history[history.length - 1]?.value;
+    const currentValueDisplay = this.selectedDevice?.deviceType === 'actuator' 
+      ? (currentValue === true ? 'ON' : 'OFF')
+      : `${currentValue}${this.getUnitByDeviceType(this.selectedDevice?.type)}`;
+
     // Convert to numerical values for the chart
     const chartValues = history.map(h => {
       if (this.selectedDevice?.deviceType === 'actuator') {
@@ -309,6 +329,10 @@ export class DataGraphComponent implements OnInit, OnDestroy {
     let yAxisLabel = '';
     let chartType: ChartType = 'line';
     let chartOptions = { ...this.lineChartOptions };
+
+    // Add current value to the label
+    const deviceName = this.selectedDevice?.name || 'Device';
+    const currentValueLabel = ` (Current: ${currentValueDisplay})`;
 
     if (this.selectedDevice?.deviceType === 'actuator') {
       yAxisLabel = 'Status';
@@ -348,7 +372,7 @@ export class DataGraphComponent implements OnInit, OnDestroy {
       labels: labels,
       datasets: [{
         data: chartValues,
-        label: `${this.selectedDevice?.name || 'Device'} - ${yAxisLabel}`,
+        label: `${deviceName} - ${yAxisLabel}${currentValueLabel}`,
         fill: false,
         tension: 0.4,
         borderColor: color,
