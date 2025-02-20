@@ -245,10 +245,17 @@
 .devices-cell {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 12px;
 }
 
-.view-devices-btn {
+.device-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.view-devices-btn, .graph-btn {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -260,11 +267,11 @@
   transition: background-color 0.2s;
 }
 
-.view-devices-btn:hover {
+.view-devices-btn:hover, .graph-btn:hover {
   background-color: #e3f2fd;
 }
 
-.view-devices-btn mat-icon {
+.view-devices-btn mat-icon, .graph-btn mat-icon {
   color: #4649a8;
   font-size: 20px;
   width: 20px;

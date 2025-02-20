@@ -6,7 +6,9 @@ import { MatIconModule } from '@angular/material/icon';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Room } from '../../../../core/models/room.model';
+import { Device } from '../../../../core/models/device.model';
 import { MatMenuModule } from '@angular/material/menu';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { AsideComponent } from '../../../../shared/aside/aside.component';
 import { AuthService } from '../../../../core/services/auth';
 import { MatDialog } from '@angular/material/dialog';
@@ -27,7 +29,7 @@ interface RoomWithId extends Room {
   templateUrl: './installation-rooms.component.html',
   styleUrls: ['./installation-rooms.component.css'],
   standalone: true,
-  imports: [MatIconModule, CommonModule, FormsModule, MatMenuModule, AsideComponent, RouterModule, DataGraphComponent]
+  imports: [MatIconModule, CommonModule, FormsModule, MatMenuModule, MatTooltipModule, AsideComponent, RouterModule, DataGraphComponent]
 })
 export class InstallationRoomsComponent implements OnInit {
   rooms: Room[] = [];
@@ -224,5 +226,20 @@ export class InstallationRoomsComponent implements OnInit {
 
   viewDevices(roomId: string): void {
     this.router.navigate(['/client/rooms', roomId, 'devices']);
+  }
+
+  viewDeviceGraph(deviceId: string): void {
+    this.router.navigate(['/client/data-graph', deviceId]);
+  }
+
+  getDeviceId(device: string | Device): string {
+    if (typeof device === 'string') {
+      return device;
+    }
+    return device._id || '';
+  }
+
+  getDevices(room: Room): any[] {
+    return room.devices || [];
   }
 }

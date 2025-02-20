@@ -46,7 +46,7 @@ export const ClientRouting: Routes = [
     canActivate: [AuthGuard]
   },
   {
-    path: 'data-graph',
+    path: 'data-graph/:deviceId',
     component: DataGraphComponent,
     canActivate: [AuthGuard]
   }

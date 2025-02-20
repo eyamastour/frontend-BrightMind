@@ -1,5 +1,6 @@
 import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { ActivatedRoute } from '@angular/router';
 import { Chart, ChartConfiguration, ChartType } from 'chart.js';
 import { BaseChartDirective } from 'ng2-charts';
 import {
@@ -217,26 +218,47 @@ export class DataGraphComponent implements OnInit, OnDestroy {
     }
   }
 
-  constructor(private deviceService: DeviceService) {}
+  constructor(
+    private deviceService: DeviceService,
+    private route: ActivatedRoute
+  ) {}
 
   ngOnInit(): void {
-    const installationId = this.deviceService.getInstallationId();
-    if (installationId) {
-      this.loadDevices(installationId);
-    }
-
-    this.subscription = this.deviceService.installationId$.subscribe(id => {
-      if (id) {
-        this.loadDevices(id);
+    // Get deviceId from route parameter
+    const deviceId = this.route.snapshot.paramMap.get('deviceId');
+    if (deviceId) {
+      // Load device details first
+      this.deviceService.getDevice(deviceId).subscribe({
+        next: (device: Device) => {
+          this.selectedDevice = device;
+          this.loadDeviceHistory(deviceId, this.timeRange);
+        },
+        error: (error: Error) => {
+          console.error('Error loading device:', error);
+          this.hasError = true;
+          this.errorMessage = 'Failed to load device details';
+        }
+      });
+    } else {
+      // Fallback to original behavior if no deviceId in route
+      const installationId = this.deviceService.getInstallationId();
+      if (installationId) {
+        this.loadDevices(installationId);
       }
-    });
+
+      this.subscription = this.deviceService.installationId$.subscribe(id => {
+        if (id) {
+          this.loadDevices(id);
+        }
+      });
+    }
   }
 
   loadDevices(installationId: string): void {
     this.isLoading = true;
     this.hasError = false;
     this.deviceService.getDevicesByInstallation(installationId).subscribe({
-      next: (devices) => {
+      next: (devices: Device[]) => {
         this.devices = devices;
         if (devices.length > 0) {
           const device = devices[0];
@@ -248,7 +270,7 @@ export class DataGraphComponent implements OnInit, OnDestroy {
           this.errorMessage = 'No devices found for this installation';
         }
       },
-      error: (error) => {
+      error: (error: Error) => {
         console.error('Error loading devices:', error);
         this.isLoading = false;
         this.hasError = true;
@@ -278,7 +300,7 @@ export class DataGraphComponent implements OnInit, OnDestroy {
     this.isLoading = true;
     this.hasError = false;
     this.deviceService.getDeviceHistory(deviceId, days).subscribe({
-      next: (history) => {
+      next: (history: DeviceHistory[]) => {
         if (history.length === 0) {
           this.hasError = true;
           this.errorMessage = 'No data available for the selected time range';
@@ -287,7 +309,7 @@ export class DataGraphComponent implements OnInit, OnDestroy {
         }
         this.isLoading = false;
       },
-      error: (error) => {
+      error: (error: Error) => {
         console.error('Error loading device history:', error);
         this.isLoading = false;
         this.hasError = true;

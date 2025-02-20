@@ -60,10 +60,10 @@
       </div>
 
       <!-- Data Graph Component -->
-      <div class="data-graph-section">
+      <!-- <div class="data-graph-section">
         <h2>Device Data Visualization</h2>
         <app-data-graph></app-data-graph>
-      </div>
+      </div> -->
 
       <div class="dashboard-container">
         <div class="dashboard-header">
@@ -115,9 +115,18 @@
               <td>
                 <div class="devices-cell">
                   <span>{{ room.devices?.length || 0 }} devices</span>
-                  <button class="view-devices-btn" (click)="viewDevices(room._id!)" *ngIf="room._id">
-                    <mat-icon>visibility</mat-icon>
-                  </button>
+                  <div class="device-actions">
+                    <button class="view-devices-btn" (click)="viewDevices(room._id!)" *ngIf="room._id">
+                      <mat-icon>visibility</mat-icon>
+                    </button>
+                    <ng-container *ngIf="getDevices(room).length > 0">
+                      <button class="graph-btn" *ngFor="let device of getDevices(room)" 
+                        (click)="viewDeviceGraph(getDeviceId(device))" 
+                        matTooltip="View device graph">
+                        <mat-icon>show_chart</mat-icon>
+                      </button>
+                    </ng-container>
+                  </div>
                 </div>
               </td>
               <td>

@@ -33,6 +33,10 @@ export class DeviceService {
     return this.http.get<Device[]>(`${this.baseUrl}/devices`);
   }
 
+  getDevice(deviceId: string): Observable<Device> {
+    return this.http.get<Device>(`${this.baseUrl}/devices/${deviceId}`);
+  }
+
   addDevice(device: Device): Observable<Device> {
     return this.http.post<Device>(`${this.baseUrl}/devices`, device);
   }
