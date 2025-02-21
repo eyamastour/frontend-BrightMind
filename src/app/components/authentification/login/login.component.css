@@ -1,32 +1,159 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap');
-*{
+
+* {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
   font-family: 'Montserrat', sans-serif;
 }
 
-.parent{
-  background-color: #c9d6ff;
-  background: linear-gradient(to right, #e2e2e2, #7c8fea);
+.parent {
   display: flex;
   align-items: center;
   justify-content: center;
-  flex-direction: column;
-  height: 100vh;
+  min-height: 100vh;
+  background-color: #f5f5f5;
+  padding: 20px;
 }
-.container{
+
+.container {
   background-color: #fff;
   border-radius: 30px;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.35);
   position: relative;
   overflow: hidden;
-  width: 880px;
+  width: 768px;
   max-width: 100%;
-  min-height: 500px;
-  margin-top: -5%;
+  min-height: 480px;
 }
-.toggle-container{
+
+.container.active {
+  transform: translateX(0);
+}
+
+.form-container {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  transition: all 0.6s ease-in-out;
+  overflow-y: auto;
+}
+
+.sign-in {
+  left: 0;
+  width: 50%;
+  z-index: 2;
+}
+
+.container.active .sign-in {
+  transform: translateX(100%);
+}
+
+.sign-up {
+  left: 0;
+  width: 50%;
+  opacity: 0;
+  z-index: 1;
+  max-height: 100%;
+  overflow-y: auto;
+}
+
+.container.active .sign-up {
+  transform: translateX(100%);
+  opacity: 1;
+  z-index: 5;
+  animation: move 0.6s;
+}
+
+/* Custom scrollbar styling */
+.form-container::-webkit-scrollbar {
+  width: 6px;
+}
+
+.form-container::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 3px;
+}
+
+.form-container::-webkit-scrollbar-thumb {
+  background: #458FF6;
+  border-radius: 3px;
+}
+
+.form-container::-webkit-scrollbar-thumb:hover {
+  background: #3b7fd9;
+}
+
+@keyframes move {
+  0%, 49.99% {
+    opacity: 0;
+    z-index: 1;
+  }
+  50%, 100% {
+    opacity: 1;
+    z-index: 5;
+  }
+}
+
+form {
+  background-color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  padding: 0 50px;
+  height: 100%;
+  text-align: center;
+}
+
+h1 {
+  color: #458FF6;
+  font-weight: 600;
+  margin-bottom: 30px;
+}
+
+.input-box {
+  width: 100%;
+  margin: 10px 0;
+}
+
+.remember-me {
+  margin: 15px 0;
+  color: #666;
+}
+
+a {
+  color: #458FF6;
+  text-decoration: none;
+  margin: 15px 0;
+  font-size: 14px;
+}
+
+button {
+  background-color: #458FF6;
+  color: #fff;
+  font-size: 14px;
+  padding: 10px 45px;
+  border: 1px solid transparent;
+  border-radius: 25px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  margin-top: 10px;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+button:hover {
+  transform: translateY(-2px);
+}
+
+button.hidden {
+  background-color: transparent;
+  border-color: #fff;
+}
+
+.toggle-container {
   position: absolute;
   top: 0;
   left: 50%;
@@ -38,15 +165,15 @@
   z-index: 1000;
 }
 
-.container.active .toggle-container{
+.container.active .toggle-container {
   transform: translateX(-100%);
   border-radius: 0 150px 100px 0;
 }
 
-.toggle{
+.toggle {
   background-color: #458FF6;
   height: 100%;
-  background: linear-gradient(to right, #87c2ff, #1f3a8a);
+  background: linear-gradient(to right, #458FF6, #3b7fd9);
   color: #fff;
   position: relative;
   left: -100%;
@@ -56,221 +183,11 @@
   transition: all 0.6s ease-in-out;
 }
 
-.container.active .toggle{
+.container.active .toggle {
   transform: translateX(50%);
 }
-.container p{
-  font-size: 14px;
-  line-height: 20px;
-  letter-spacing: 0.3px;
-  margin: 20px 0;
-}
 
-.container .mat-label{
-  background-color: #eee;
-  border: none;
-  margin: 8px 0;
-  padding: 10px 15px;
-  font-size: 13px;
-  border-radius: 8px;
-  width: 100%;
-  outline: none;
-}
-.remember-me {
-  margin-top: 10px;
-  display: flex;
-  align-items: center;
-}
-
-.container button{
-  background-color: #121247;
-  color: #fff;
-  font-size: 12px;
-  padding: 10px 45px;
-  border: 1px solid transparent;
-  border-radius: 8px;
-  font-weight: 600;
-  letter-spacing: 0.5px;
-  text-transform: uppercase;
-  margin-top: 10px;
-  cursor: pointer;
-}
-.container.active .sign-up{
-  transform: translateX(100%);
-  opacity: 1;
-  z-index: 5;
-  animation: move 0.6s;
-}
-@keyframes move {
-  0%, 49.99% { /* Animation state from 0% to almost 50% */
-    opacity: 0; /* Fully transparent */
-    z-index: 1; /* Lower stacking order */
-  }
-  50%, 100% { /* Animation state from 50% to 100% */
-    opacity: 1; /* Fully visible */
-    z-index: 5; /* Higher stacking order */
-  }
-}
-.container .sign-up {
-  display: none;
-}
-.container.active .sign-up {
-  display: block;
-}
-.container .sign-in {
-  display: block;
-}
-.container.active .sign-in {
-  display: none;
-}
-
-.container form{
-  background-color: #fff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  padding: 0 40px;
-  height: 100%;
-}
-.container a {
-  color: #333;
-  font-size: 13px;
-  text-decoration: none;
-  margin: 60px 0 10px;
-  display: block;
-  text-align: center;
-}
-
-form h1 {
-  margin-bottom: 24px; /* Add spacing below the heading */
-  text-align: center;
-  margin-top: 50px;
-  color: #458FF6;
-  /* Center the heading (optional) */
-}
-/* Media Queries */
-@media (max-width: 1024px) {
-  .container {
-    width: 90%;
-    min-height: 400px;
-  }
-  .container button {
-    padding: 10px 15px;
-    font-size: 12px;
-  }
-}
-
-@media (max-width: 768px) {
-  .container {
-    flex-direction: column;
-    border-radius: 15px;
-  }
-  .toggle-container {
-    display: none; /* Hide toggle panel for smaller screens */
-  }
-}
-
-@media (max-width: 480px) {
-  .container {
-    width: 100%;
-    min-height: auto;
-    padding: 20px;
-  }
-  .container .p,
-  .container .h1 {
-    font-size: 16px;
-  }
-  .container button {
-    padding: 8px 10px;
-    font-size: 10px;
-  }
-}
-.input-box {
-  background-color: transparent;
-  border: none;
-  margin: 10px 0 8px 0; /* Top margin is 40px, bottom margin is 8px */
-  padding: 6px 15px;
-  font-size: 13px;
-  border-radius: 8px;
-  width: 100%;
-  outline: none;
-}
-
-/* Custom checkbox styles */
-::ng-deep .mdc-checkbox {
-  padding: 0 !important;
-}
-
-::ng-deep .mdc-checkbox .mdc-checkbox__native-control:enabled:not(:checked):not(:indeterminate):not([data-indeterminate=true])~.mdc-checkbox__background {
-  border-color: #458FF6 !important;
-  border-width: 2px !important;
-}
-
-::ng-deep .mdc-checkbox .mdc-checkbox__native-control:enabled:checked~.mdc-checkbox__background {
-  border-color: #458FF6 !important;
-  background-color: #458FF6 !important;
-}
-
-::ng-deep .mdc-checkbox:hover .mdc-checkbox__native-control:enabled:not(:checked):not(:indeterminate):not([data-indeterminate=true])~.mdc-checkbox__background {
-  border-color: #1f3a8a !important;
-}
-
-::ng-deep .mdc-checkbox:hover .mdc-checkbox__native-control:enabled:checked~.mdc-checkbox__background {
-  background-color: #1f3a8a !important;
-  border-color: #1f3a8a !important;
-}
-
-/* Checkbox container styles */
-::ng-deep .mat-mdc-checkbox {
-  margin: 15px 0;
-  display: flex !important;
-  align-items: center;
-}
-
-/* Checkbox label styles */
-::ng-deep .mdc-form-field {
-  font-family: 'Montserrat', sans-serif !important;
-  font-size: 13px !important;
-  color: #333 !important;
-  margin-left: 8px !important;
-}
-
-/* Adjust spacing for the forgot password link */
-::ng-deep .mat-mdc-checkbox + a {
-  margin-top: 30px !important;
-}
-
-/* Ripple effect color */
-::ng-deep .mat-mdc-checkbox .mat-ripple-element {
-  background-color: rgba(69, 143, 246, 0.2) !important;
-}
-
-
-
-.sign-in{
-  left: 0;
-  width: 50%;
-  z-index: 2;
-}
-.sign-up{
-  left: 0;
-  width: 50%;
-  opacity: 0;
-  z-index: 1;
-  transition: all 0.5s;
-}
-.container.active .sign-in{
-  transform: translateX(100%);
-}
-
-.container button.hidden{
-  background-color: transparent;
-  border-color: #fff;
-}
-
-
-.toggle-panel{
+.toggle-panel {
   position: absolute;
   width: 50%;
   height: 100%;
@@ -284,19 +201,84 @@ form h1 {
   transform: translateX(0);
   transition: all 0.6s ease-in-out;
 }
-.toggle-left{
+
+.toggle-left {
   transform: translateX(-200%);
 }
 
-.container.active .toggle-left{
+.container.active .toggle-left {
   transform: translateX(0);
 }
 
-.toggle-right{
+.toggle-right {
   right: 0;
   transform: translateX(0);
 }
 
-.container.active .toggle-right{
+.container.active .toggle-right {
   transform: translateX(200%);
+}
+
+.toggle-panel h1 {
+  color: #fff;
+}
+
+.toggle-panel p {
+  font-size: 14px;
+  padding: 20px 0;
+  color: #fff;
+}
+
+.full-width {
+  width: 100%;
+}
+
+@media (max-width: 768px) {
+  .container {
+    min-height: 800px;
+    margin: 20px;
+  }
+
+  .form-container {
+    width: 100%;
+    left: 0;
+    top: 0;
+  }
+
+  .sign-in, .sign-up {
+    width: 100%;
+  }
+
+  .toggle-container {
+    display: none;
+  }
+
+  form {
+    padding: 0 20px;
+  }
+}
+
+/* Material Form Field Customization */
+::ng-deep .mat-form-field-appearance-legacy .mat-form-field-underline {
+  background-color: #458FF6;
+}
+
+::ng-deep .mat-form-field-appearance-legacy .mat-form-field-label {
+  color: #666;
+}
+
+::ng-deep .mat-form-field.mat-focused .mat-form-field-label {
+  color: #458FF6;
+}
+
+::ng-deep .mat-form-field-ripple {
+  background-color: #458FF6;
+}
+
+::ng-deep .mat-form-field-required-marker {
+  color: #458FF6;
+}
+
+::ng-deep .mat-checkbox-checked.mat-accent .mat-checkbox-background {
+  background-color: #458FF6;
 }

@@ -20,7 +20,6 @@
             <div class="name">User</div>
           </div>
 
-
           <button mat-menu-item (click)="signOut()">
             <mat-icon>logout</mat-icon>
             <span>Logout</span>
@@ -32,14 +31,14 @@
     <div class="content">
       <div class="installation-header">
         <h1>Installation Rooms</h1>
-        <!-- <div class="installation-actions">
+        <div class="installation-actions" *ngIf="isAdmin()">
           <button class="edit-btn" (click)="openEditInstallationDialog({_id: installationId})">
             <mat-icon>edit</mat-icon>
           </button>
           <button class="delete-btn" (click)="openDeleteInstallationDialog({_id: installationId})">
             <mat-icon>delete</mat-icon>
           </button>
-        </div> -->
+        </div>
       </div>
 
       <div class="stats-grid">
@@ -59,20 +58,10 @@
         </div>
       </div>
 
-      <!-- Data Graph Component -->
-      <!-- <div class="data-graph-section">
-        <h2>Device Data Visualization</h2>
-        <app-data-graph></app-data-graph>
-      </div> -->
-
       <div class="dashboard-container">
         <div class="dashboard-header">
           <div class="left-controls">
-            <!-- <button class="add-btn" (click)="openAddInstallationDialog()">
-              <mat-icon>add</mat-icon>
-              Add Installation
-            </button> -->
-            <button class="add-btn" (click)="openAddRoomDialog()">
+            <button class="add-btn" (click)="openAddRoomDialog()" *ngIf="isAdmin()">
               <mat-icon>add</mat-icon>
               Add Room
             </button>
@@ -101,7 +90,7 @@
               <td>
                 <div class="room-name">
                   {{ room.name }}
-                  <div class="action-buttons">
+                  <div class="action-buttons" *ngIf="isAdmin()">
                     <button class="edit-btn" (click)="openEditRoomDialog(room)">
                       <mat-icon>edit</mat-icon>
                     </button>

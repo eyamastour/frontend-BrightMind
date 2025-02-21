@@ -8,6 +8,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { CommonModule } from '@angular/common';
 import { InstallationService } from '../../../../../core/services/installation.service';
 import { Installation } from '../../../../../core/models/installation';
+import { AuthService } from '../../../../../core/services/auth';
 
 @Component({
   selector: 'app-add-installation',
@@ -204,7 +205,7 @@ import { Installation } from '../../../../../core/models/installation';
     MatInputModule,
     MatIconModule
   ],
-  providers: [InstallationService]
+  providers: [InstallationService, AuthService]
 })
 export class AddInstallationComponent {
   // ... rest of the component logic remains the same
@@ -213,7 +214,8 @@ export class AddInstallationComponent {
   constructor(
     private fb: FormBuilder,
     private dialogRef: MatDialogRef<AddInstallationComponent>,
-    private installationService: InstallationService
+    private installationService: InstallationService,
+    private authService: AuthService
   ) {
     this.installationForm = this.fb.group({
       name: ['', Validators.required],

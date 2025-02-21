@@ -7,7 +7,7 @@ import { MatCard, MatCardHeader, MatCardModule } from "@angular/material/card";
 import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select';
 import intlTelInput from 'intl-tel-input';
-
+import { ToastrService } from "ngx-toastr";
 import { Router } from '@angular/router';
 
 @Component({
@@ -35,7 +35,8 @@ export class SignupComponent {
   constructor(
     private fb: FormBuilder,
     private userService: UserService,
-    private router: Router
+    private router: Router,
+    private toastrService: ToastrService
   ) {
     this.signupForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
@@ -64,12 +65,12 @@ export class SignupComponent {
     this.userService.signup(signupData).subscribe(
       (response) => {
         if (response.status === 'SUCCESS') {
-          alert('Signup successful! Please verify your email.');
+          this.toastrService.success('Registration successful! Please check your email to verify your account.');
           this.router.navigate(['/auth/login']);
         }
       },
       (error) => {
-        alert('Signup failed: ' + error.message);
+        this.toastrService.error('Registration failed: ' + error.message);
       }
     );
   }

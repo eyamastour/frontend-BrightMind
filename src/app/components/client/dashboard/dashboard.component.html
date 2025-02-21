@@ -17,7 +17,7 @@
             
                   <mat-menu #profileMenu="matMenu" class="profile-menu">
                     <div class="profile-header">
-                      <div class="name">User</div>
+                      <div class="name">{{ authService.getCurrentUser()?.username || 'User' }}</div>
                     </div>
             
                     <button mat-menu-item [routerLink]="'/client/profil'">
@@ -71,7 +71,7 @@
                   <select class="filter-select">
                     <option>All</option>
                   </select>
-                  <button class="add-button" (click)="openAddDialog()">
+                  <button class="add-button" (click)="openAddDialog()" *ngIf="isAdmin()">
                     Add
                   </button>
                 </div>
@@ -82,7 +82,7 @@
                         <mat-icon>business</mat-icon>
                         {{ installation.name }}
                       </span>
-                      <div class="item-actions">
+                      <div class="item-actions" *ngIf="canManageInstallation(installation)">
                         <button class="action-btn edit" (click)="openEditDialog(installation); $event.stopPropagation()">
                           <mat-icon>edit</mat-icon>
                         </button>

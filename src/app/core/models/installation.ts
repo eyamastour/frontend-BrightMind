@@ -11,6 +11,7 @@ export interface Installation {
   parent: string;
   devices: Device[];
   rooms: Room[];
+  userId: string;
   createdAt?: Date;
   updatedAt?: Date;
 }

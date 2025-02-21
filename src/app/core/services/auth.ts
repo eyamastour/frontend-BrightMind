@@ -20,12 +20,18 @@ export class AuthService {
   
     return this.http.post<any>(`${this.apiUrl}/login`, loginData).pipe(
       tap((response) => {
-        if (response.token) {
-          this.saveToken(response.token); // Sauvegarde le token
-          this.saveCurrentUser(response.user); // Sauvegarde l'utilisateur
+        if (response.token && response.user) {
+          this.saveToken(response.token, rememberMe);
+          this.saveCurrentUser(response.user);
+          console.log('Login successful:', { token: response.token, user: response.user });
+        } else {
+          console.error('Invalid response format:', response);
         }
       }),
-      catchError(this.handleError) // Gestion des erreurs
+      catchError((error) => {
+        console.error('Login error:', error);
+        return this.handleError(error);
+      })
     );
   }
   
@@ -68,6 +74,7 @@ export class AuthService {
   logout(): void {
     localStorage.removeItem('token');
     sessionStorage.removeItem('token');
+    localStorage.removeItem(AuthentificationConstant.CURRENT_USER_LOCAL_STORAGE);
     this.tokenSubject.next(null);  // Mise à jour de l'état de l'authentification
   }
 

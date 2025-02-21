@@ -1,4 +1,5 @@
 export interface User {
+    _id: string;
     username: string;
     firstName: string;
     lastName: string;
@@ -9,5 +10,4 @@ export interface User {
     isVerified: boolean;
     language: string;
     company: string;
-  }
-  
+}

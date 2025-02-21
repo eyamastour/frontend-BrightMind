@@ -25,7 +25,6 @@ export class LoginComponent {
   showSpinner: boolean = false;
   isSignDivVisiable: boolean = false;
   authConstant = AuthentificationConstant;
-  signUpForm: FormGroup;
 
   constructor(
     private route: ActivatedRoute,
@@ -39,10 +38,6 @@ export class LoginComponent {
       password: ['', [Validators.required, Validators.minLength(6)]],
       rememberMe: [false]
     });
-    this.signUpForm = this.fb.group({
-      email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, Validators.minLength(6)]],
-    });
   }
 
   onSignIn() {
@@ -54,11 +49,10 @@ export class LoginComponent {
         (response) => {
           this.showSpinner = false;
           this.toastrService.success(this.authConstant.LOGIN_SUCCESS);
-          this.authService.saveToken(response.token, rememberMe);
-  
-          // Vérifier que le token a bien été sauvegardé
-          const token = rememberMe ? localStorage.getItem('token') : sessionStorage.getItem('token');
-          console.log('Token sauvegardé:', token);  // Vérifier le token
+          
+          // La sauvegarde du token et de l'utilisateur est déjà gérée dans le service auth
+          const user = this.authService.getCurrentUser();
+          console.log('Connexion réussie:', { user });
   
           this.router.navigate(['/client/dashboard']);
         },
@@ -72,5 +66,4 @@ export class LoginComponent {
       this.toastrService.warning('Please fill in the required fields correctly.');
     }
   }
-  
 }

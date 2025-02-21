@@ -25,17 +25,34 @@ export class DashboardComponent {
   filteredInstallations: any[] = [];
   searchTerm: string = '';
   installationId: string | null = null;
+  userRole: string = 'user';
 
   constructor(
     private installationService: InstallationService,
     private deviceService: DeviceService,
     private dialog: MatDialog,
     private router: Router,
-    private authService: AuthService,
+    public authService: AuthService,
     private route: ActivatedRoute
   ) {}
 
   ngOnInit(): void {
+    this.loadUserRole();
+    this.loadInstallations();
+  }
+
+  loadUserRole(): void {
+    const currentUser = this.authService.getCurrentUser();
+    if (currentUser) {
+      this.userRole = currentUser.role;
+    }
+  }
+
+  isAdmin(): boolean {
+    return this.authService.isAdmin();
+  }
+
+  loadInstallations(): void {
     this.installationService.getInstallations().subscribe(
       (data) => {
         console.log('Installations data:', data);
@@ -60,7 +77,6 @@ export class DashboardComponent {
       }
     );
   }
-  
 
   onSearch(): void {
     if (!this.searchTerm.trim()) {
@@ -153,6 +169,7 @@ export class DashboardComponent {
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
         console.log('Installation added:', result);
+        this.refreshInstallations(); // Rafraîchir la liste après l'ajout
       }
     });
   }
@@ -160,5 +177,11 @@ export class DashboardComponent {
   signOut() {
     this.authService.logout();  
     this.router.navigate(['/login']);  
+  }
+
+  canManageInstallation(installation: Installation): boolean {
+    if (this.isAdmin()) return true;
+    const currentUser = this.authService.getCurrentUser();
+    return currentUser !== null && installation.userId === currentUser._id;
   }
 }

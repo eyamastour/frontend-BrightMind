@@ -36,6 +36,7 @@ export class InstallationRoomsComponent implements OnInit {
   filteredRooms: Room[] = [];
   installationId: string | null = null;
   searchTerm: string = '';
+  userRole: string = 'user';
 
   constructor(
     private route: ActivatedRoute,
@@ -47,6 +48,7 @@ export class InstallationRoomsComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.loadUserRole();
     this.loadRooms();
   }
 
@@ -196,6 +198,17 @@ export class InstallationRoomsComponent implements OnInit {
 
   private isRoomWithId(room: Room): room is RoomWithId {
     return room._id !== undefined;
+  }
+
+  loadUserRole(): void {
+    const currentUser = this.authService.getCurrentUser();
+    if (currentUser) {
+      this.userRole = currentUser.role;
+    }
+  }
+
+  isAdmin(): boolean {
+    return this.authService.isAdmin();
   }
 
   signOut(): void {
