@@ -5,6 +5,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { CommonModule } from '@angular/common';
 import { InstallationService } from '../../../../../core/services/installation.service';
 import { Installation } from '../../../../../core/models/installation';
@@ -203,9 +204,10 @@ import { AuthService } from '../../../../../core/services/auth';
     MatButtonModule,
     MatFormFieldModule,
     MatInputModule,
-    MatIconModule
+    MatIconModule,
+    MatSnackBarModule
   ],
-  providers: [InstallationService, AuthService]
+  providers: [InstallationService, AuthService, MatSnackBar]
 })
 export class AddInstallationComponent {
   // ... rest of the component logic remains the same
@@ -215,14 +217,15 @@ export class AddInstallationComponent {
     private fb: FormBuilder,
     private dialogRef: MatDialogRef<AddInstallationComponent>,
     private installationService: InstallationService,
-    private authService: AuthService
+    private authService: AuthService,
+    private snackBar: MatSnackBar
   ) {
     this.installationForm = this.fb.group({
       name: ['', Validators.required],
       route: ['', Validators.required],
       boxId: ['', Validators.required],
-      latitude: ['', [Validators.required]],
-      longitude: ['', [Validators.required]],
+      latitude: [''],
+      longitude: [''],
       parent: ['ROOT']
     });
   }
@@ -236,6 +239,11 @@ export class AddInstallationComponent {
           },
           error: (error: any) => {
             console.error('Error adding installation:', error);
+            this.snackBar.open(
+              error.error?.message || 'Failed to add installation. Please try again.',
+              'Close',
+              { duration: 5000 }
+            );
           }
         });
     }

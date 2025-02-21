@@ -179,9 +179,13 @@ export class DashboardComponent {
     this.router.navigate(['/login']);  
   }
 
-  canManageInstallation(installation: Installation): boolean {
+  canEditInstallation(installation: Installation): boolean {
     if (this.isAdmin()) return true;
     const currentUser = this.authService.getCurrentUser();
     return currentUser !== null && installation.userId === currentUser._id;
+  }
+
+  canDeleteInstallation(): boolean {
+    return this.isAdmin();
   }
 }
