@@ -43,6 +43,32 @@ export class RoomDevicesComponent implements OnInit {
   isLoading: boolean = false;
   activeAlarms: Set<string> = new Set();
 
+  toggleDeviceConnection(device: Device): void {
+    device.enableConnection = !device.enableConnection;
+    device.status = device.enableConnection ? 'active' : 'inactive';
+    
+    if (device._id) {
+      this.deviceService.updateDevice(device._id, {
+        enableConnection: device.enableConnection,
+        status: device.status
+      }).subscribe({
+        next: (updatedDevice) => {
+          const index = this.devices.findIndex(d => d._id === updatedDevice._id);
+          if (index !== -1) {
+            this.devices[index] = { ...this.devices[index], ...updatedDevice };
+          }
+          this.updateFilteredDevices();
+        },
+        error: (error) => {
+          console.error('Error updating device connection:', error);
+          // Revert the changes if update fails
+          device.enableConnection = !device.enableConnection;
+          device.status = device.enableConnection ? 'active' : 'inactive';
+        }
+      });
+    }
+  }
+
   constructor(
     private route: ActivatedRoute,
     private router: Router,

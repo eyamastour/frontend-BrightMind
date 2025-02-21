@@ -87,8 +87,8 @@
                       </td>
                       <td>
                         <div class="param-value">
-                          <div class="toggle-switch">
-                            <div class="toggle-slider" [class.active]="device.enableConnection"></div>
+                          <div class="toggle-switch" [class.active]="device.enableConnection" (click)="toggleDeviceConnection(device)">
+                            <div class="toggle-slider"></div>
                           </div>
                         </div>
                         <div class="param-label">Enable Connection</div>
