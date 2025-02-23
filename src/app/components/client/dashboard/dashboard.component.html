@@ -78,11 +78,14 @@
               
                 <div class="tree" *ngFor="let installation of filteredInstallations">
                     <div class="tree-item root">
-                      <span class="item-name" >
+                      <span class="item-name" (click)="goToInstallationRooms(installation._id)">
                         <mat-icon>business</mat-icon>
                         {{ installation.name }}
                       </span>
                       <div class="item-actions">
+                        <button class="action-btn view-rooms" (click)="goToInstallationRooms(installation._id); $event.stopPropagation()">
+                          <mat-icon>meeting_room</mat-icon>
+                        </button>
                         <button class="action-btn edit" *ngIf="canEditInstallation(installation)" (click)="openEditDialog(installation); $event.stopPropagation()">
                           <mat-icon>edit</mat-icon>
                         </button>

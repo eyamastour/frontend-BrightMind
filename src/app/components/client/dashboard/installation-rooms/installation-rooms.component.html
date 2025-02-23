@@ -89,6 +89,7 @@
             <tr *ngFor="let room of filteredRooms">
               <td>
                 <div class="room-name">
+                  <mat-icon class="room-icon">meeting_room</mat-icon>
                   {{ room.name }}
                   <div class="action-buttons" *ngIf="isAdmin()">
                     <button class="edit-btn" (click)="openEditRoomDialog(room)">

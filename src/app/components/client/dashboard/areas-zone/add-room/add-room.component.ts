@@ -4,6 +4,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { MatIconModule } from '@angular/material/icon';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -11,6 +12,7 @@ import { CommonModule } from '@angular/common';
   template: `
     <div class="dialog-container">
       <div class="dialog-header">
+        <mat-icon class="room-icon">meeting_room</mat-icon>
         <h2>Add New Room</h2>
       </div>
 
@@ -61,6 +63,17 @@ import { CommonModule } from '@angular/common';
     .dialog-header {
       margin-bottom: 20px;
       text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .room-icon {
+      color: #007bff;
+      font-size: 24px;
+      width: 24px;
+      height: 24px;
     }
 
     .dialog-header h2 {
@@ -150,7 +163,8 @@ import { CommonModule } from '@angular/common';
     ReactiveFormsModule,
     MatButtonModule,
     MatFormFieldModule,
-    MatInputModule
+    MatInputModule,
+    MatIconModule
   ]
 })
 export class AddRoomComponent {
