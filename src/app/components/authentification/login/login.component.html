@@ -39,7 +39,7 @@
           Remember me
         </mat-checkbox>
 
-        <a href="#">{{ authConstant.FORGOT_PASSWORD }}</a>
+        <a [routerLink]="['/auth/forgot-password']">{{ authConstant.FORGOT_PASSWORD }}</a>
 
         <button mat-flat-button color="primary" class="full-width" type="submit">
           {{ authConstant.SIGNIN }}

@@ -13,6 +13,18 @@ export class UserService {
 
   constructor(private http: HttpClient) { }
 
+  forgotPassword(email: string): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/forgot-password`, { email });
+  }
+
+  validateResetToken(token: string): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/reset-password?token=${token}`);
+  }
+
+  resetPassword(token: string, newPassword: string): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/reset-password/${token}`, { newPassword });
+  }
+
   signup(data: any): Observable<any> {
     return this.http.post<any>(`${this.apiUrl}/signup`, data);
   }

@@ -4,6 +4,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { CommonModule } from "@angular/common";
+import { RouterModule } from '@angular/router';
 
 export const AuthentificationImports = [
   MatFormFieldModule,
@@ -11,5 +12,6 @@ export const AuthentificationImports = [
   MatButtonModule,
   MatDividerModule,
   MatCheckboxModule,
-  CommonModule
+  CommonModule,
+  RouterModule
 ];
