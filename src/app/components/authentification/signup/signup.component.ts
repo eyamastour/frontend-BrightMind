@@ -9,6 +9,7 @@ import { MatSelectModule } from '@angular/material/select';
 import intlTelInput from 'intl-tel-input';
 import { ToastrService } from "ngx-toastr";
 import { Router } from '@angular/router';
+import { first } from 'rxjs';
 
 @Component({
   selector: 'app-signup',
@@ -46,6 +47,8 @@ export class SignupComponent {
         Validators.required,
         Validators.pattern('^\\s*(?:\\+?(\\d{1,3}))?[-. (]*(\\d{3})[-. )]*(\\d{3})[-. ]*(\\d{4})(?: *x(\\d+))?\\s*$')
       ]],
+      firstname: ['', Validators.required],
+      lastname: ['', Validators.required],
       language: ['', Validators.required],
     });
   }

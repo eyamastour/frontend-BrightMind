@@ -7,6 +7,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AsideComponent } from '../../../shared/aside/aside.component';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-user-profile',
@@ -27,7 +28,7 @@ export class UserProfileComponent implements OnInit {
   lastUpdateDate: string = new Date().toLocaleDateString();
   userConnected: User | null = null;
 
-  constructor(private authService: AuthService) {}
+  constructor(private authService: AuthService, private toastr: ToastrService) {}
 
   ngOnInit(): void {
     this.userConnected = this.authService.getCurrentUser();
@@ -43,6 +44,9 @@ export class UserProfileComponent implements OnInit {
       // TODO: Implement actual profile update
       this.authService.saveCurrentUser(this.user);
       this.lastUpdateDate = new Date().toLocaleDateString();
+      this.toastr.success('Profile updated successfully!', 'Success');
+
+      
     }
   }
 }

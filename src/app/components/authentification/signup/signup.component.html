@@ -36,6 +36,17 @@
         </mat-form-field>
 
         <mat-form-field appearance="outline" class="input-field">
+          <mat-label>First Name</mat-label>
+          <input matInput formControlName="firstname" required />
+          <mat-icon matSuffix>user</mat-icon>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="input-field">
+          <mat-label>Last Name</mat-label>
+          <input matInput formControlName="lastname" required />
+          <mat-icon matSuffix>user</mat-icon>
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="input-field">
           <input
             matInput
             #phoneInput

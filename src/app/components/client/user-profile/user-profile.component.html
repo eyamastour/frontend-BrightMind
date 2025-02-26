@@ -38,47 +38,35 @@
               <div class="form-column">
                 <div class="form-group">
                   <label>First Name</label>
-                  <input type="text" [(ngModel)]="user.firstName" class="form-input"/>
+                  <input type="text" [(ngModel)]="user.firstname" class="form-input"/>
                 </div>
                 <div class="form-group">
                   <label>Last Name</label>
-                  <input type="text" [(ngModel)]="user.lastName" class="form-input"/>
-                </div>
-                <div class="form-group">
-                  <label>Date of birth</label>
-                  <input type="date" [(ngModel)]="user.dateOfBirth" class="form-input"/>
-                </div>
-                <div class="form-group">
-                  <label>Role</label>
-                  <select [(ngModel)]="user.role" class="form-input">
-                    <option value="user">User</option>
-                    <option value="admin">Admin</option>
-                  </select>
+                  <input type="text" [(ngModel)]="user.lastname" class="form-input"/>
                 </div>
               </div>
       
               <div class="form-column">
                 <div class="form-group">
-                  <label>Email</label>
-                  <input type="email" [(ngModel)]="user.email" class="form-input"/>
-                </div>
-                <div class="form-group">
                   <label>Phone Number</label>
                   <input type="text" [(ngModel)]="user.phone" class="form-input"/>
                 </div>
-                <div class="form-group">
-                  <label>Language</label>
-                  <select [(ngModel)]="user.language" class="form-input">
-                    <option value="francais">French</option>
-                    <option value="anglais">English</option>
-                    <option value="italien">Italian</option>
-                  </select>
                 </div>
-                <div class="form-group">
-                  <label>Company</label>
-                  <input type="text" [(ngModel)]="user.company" class="form-input"/>
-                </div>
-              </div>
+                <div class="form-column">
+                  <div class="form-group">
+                    <label>Language</label>
+                    <select [(ngModel)]="user.language" class="form-input">
+                      <option value="francais">French</option>
+                      <option value="anglais">English</option>
+                      <option value="italien">Italian</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label>Company</label>
+                    <input type="text" [(ngModel)]="user.company" class="form-input"/>
+                  </div>
+                </div>  
+                
             </div>
       
             <button class="save-button" (click)="saveProfile()">Save</button>
