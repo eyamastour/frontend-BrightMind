@@ -21,30 +21,38 @@ import { Room } from '../../../../../core/models/room.model';
         <div class="form-content">
           <div class="form-field-container">
             <!-- Room Name Field -->
-            <mat-form-field appearance="outline" class="form-field">
-              <mat-label>Room Name</mat-label>
-              <mat-icon matPrefix class="field-icon">meeting_room</mat-icon>
-              <input matInput formControlName="name" placeholder="Enter room name">
-              <mat-error *ngIf="roomForm.get('name')?.hasError('required')">
-                Name is required
-              </mat-error>
-            </mat-form-field>
+<mat-form-field appearance="outline" class="form-field">
+  <mat-label>Room Name</mat-label>
+  <mat-icon matPrefix class="field-icon">meeting_room</mat-icon>
+  <textarea 
+    matInput 
+    formControlName="name" 
+    placeholder="Enter room name" 
+    rows="1"
+    (input)="autoResize($event)">
+  </textarea>
+  <mat-error *ngIf="roomForm.get('name')?.hasError('required')">
+    Name is required
+  </mat-error>
+</mat-form-field>
+
 
             <!-- Description Field -->
-            <mat-form-field appearance="outline" class="form-field">
-              <mat-label>Description</mat-label>
-              <mat-icon matPrefix class="field-icon">description</mat-icon>
-              <textarea 
-                matInput 
-                formControlName="description" 
-                placeholder="Enter room description" 
-                rows="4"
-                class="description-textarea"
-              ></textarea>
-              <mat-hint align="end">
-                {{roomForm.get('description')?.value?.length || 0}} characters
-              </mat-hint>
-            </mat-form-field>
+<mat-form-field appearance="outline" class="form-field">
+  <mat-label>Description</mat-label>
+  <mat-icon matPrefix class="field-icon">description</mat-icon>
+  <textarea 
+    matInput 
+    formControlName="description" 
+    placeholder="Enter room description" 
+    rows="1"
+    (input)="autoResize($event)">
+  </textarea>
+  <mat-hint align="end">
+    {{roomForm.get('description')?.value?.length || 0}} characters
+  </mat-hint>
+</mat-form-field>
+
 
             <!-- Current Settings Summary -->
             
@@ -67,8 +75,6 @@ import { Room } from '../../../../../core/models/room.model';
   styles: [`
     .dialog-container {
       padding: 24px;
-      max-width: 600px;
-      margin: 0 auto;
     }
 
     .dialog-header {
@@ -95,11 +101,12 @@ import { Room } from '../../../../../core/models/room.model';
       gap: 24px;
     }
 
-    .form-content {
-      padding: 24px;
-      background-color: #f8f9fa;
-      border-radius: 8px;
-    }
+/* Rend uniquement le contenu (formulaire) scrollable */
+.form-content {
+  flex: 1;
+  max-height: 60vh; /* Assure que le formulaire ne déborde pas */
+  padding-right: 10px; /* Évite la superposition avec la scrollbar */
+}
 
     .form-field-container {
       display: flex;
@@ -115,12 +122,13 @@ import { Room } from '../../../../../core/models/room.model';
       color: #5f6368;
       margin-right: 8px;
     }
-
-    .description-textarea {
-      min-height: 100px;
-      resize: vertical;
-    }
-
+/* Ajuste le textarea de description */
+.description-textarea {
+  min-height: 100px;
+  max-height: 200px; /* Bloque une taille max pour éviter le débordement */
+  overflow-y: auto; /* Permet le scroll uniquement sur la description */
+  resize: vertical; /* Permet à l’utilisateur d’agrandir si besoin */
+}
     .room-details {
       background-color: white;
       padding: 20px;
@@ -207,6 +215,21 @@ import { Room } from '../../../../../core/models/room.model';
     ::ng-deep .mat-form-field-wrapper {
       margin-bottom: 0;
     }
+::ng-deep .custom-dialog-container .mat-dialog-container {
+  display: flex;
+  flex-direction: column;
+  max-height: 80vh; /* La modal ne grandira pas plus que l’écran */
+  overflow: hidden; /* Pas de scroll général sur la modal */
+  padding: 24px;
+}
+  .dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  padding-top: 16px;
+  border-top: 1px solid #ddd; /* Ajoute une séparation visuelle */
+}
+
+
   `],
   standalone: true,
   imports: [
@@ -232,6 +255,12 @@ export class EditRoomComponent {
     });
   }
 
+  autoResize(event: Event) {
+    const textarea = event.target as HTMLTextAreaElement;
+    textarea.style.height = 'auto'; // Réinitialise la hauteur
+    textarea.style.height = textarea.scrollHeight + 'px'; // Ajuste à la nouvelle hauteur
+  }
+  
   onSubmit(): void {
     if (this.roomForm.valid) {
       const updatedRoom = {

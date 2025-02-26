@@ -157,8 +157,13 @@ export class InstallationRoomsComponent implements OnInit {
     if (!this.isRoomWithId(room)) return;
 
     const dialogRef = this.dialog.open(EditRoomComponent, {
+      width: '50vw',
+      maxHeight: '80vh', // Hauteur maximale contrôlée
+      panelClass: 'custom-dialog-container', // Permet d'ajouter un style spécifique
+      autoFocus: false,
       data: room
     });
+    
     
     dialogRef.afterClosed().subscribe(result => {
       if (result && this.isRoomWithId(result)) {

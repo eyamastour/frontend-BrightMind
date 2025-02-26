@@ -20,13 +20,14 @@ import { CommonModule } from '@angular/common';
         <form [formGroup]="roomForm" (ngSubmit)="onSubmit()">
           <div class="form-group">
             <label for="name">Room Name *</label>
-            <input 
-              id="name"
-              type="text"
-              class="form-control"
-              formControlName="name"
-              placeholder="Enter room name"
-            />
+<textarea 
+  id="name"
+  class="form-control"
+  formControlName="name"
+  placeholder="Enter room name"
+  rows="1"
+></textarea>
+
             <div class="error" *ngIf="roomForm.get('name')?.hasError('required')">
               Name is required
             </div>
@@ -107,10 +108,20 @@ import { CommonModule } from '@angular/common';
       box-shadow: 0 0 4px rgba(0,123,255,0.3);
     }
 
-    textarea.form-control {
-      resize: vertical;
-      min-height: 80px;
-    }
+textarea.form-control {
+  resize: vertical; 
+  min-height: 80px; 
+  max-height: 200px; 
+  overflow-y: auto; 
+}
+  textarea#name {
+  resize: none;
+  overflow: hidden; 
+  min-height: 40px; 
+  max-height: 100px; 
+}
+
+
 
     .error {
       color: red;
