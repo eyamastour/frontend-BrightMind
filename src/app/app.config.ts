@@ -7,11 +7,12 @@ import { AuthInterceptor } from "./core/interceptors/auth.interceptor";
 import {provideNativeDateAdapter} from "@angular/material/core";
 import {routes} from "./app.routes";
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MatDialogModule } from '@angular/material/dialog';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideRouter(routes, withViewTransitions({ skipInitialTransition: true })),
-    importProvidersFrom(HttpClientModule, BrowserAnimationsModule),
+    importProvidersFrom(HttpClientModule, BrowserAnimationsModule, MatDialogModule),
     provideHttpClient(withInterceptors([(req, next) => {
       const token = localStorage.getItem('token') || sessionStorage.getItem('token');
       console.log('Token being used:', token);

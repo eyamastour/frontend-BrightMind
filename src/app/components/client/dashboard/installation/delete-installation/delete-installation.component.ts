@@ -11,13 +11,13 @@ import { Installation } from '../../../../../core/models/installation';
     <div class="dialog-container">
       <div class="dialog-header">
         <mat-icon class="warning-icon">warning</mat-icon>
-        <h2 class="dialog-title">Delete Installation</h2>
+        <h2 class="dialog-title">Delete</h2>
       </div>
 
       <div class="dialog-content">
         <div class="installation-info">
           <mat-icon class="installation-icon">business</mat-icon>
-          <span class="installation-name">{{ data.name }}</span>
+          <span class="installation-name"></span>
         </div>
 
         <div class="warning-section">

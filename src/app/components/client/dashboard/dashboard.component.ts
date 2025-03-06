@@ -16,13 +16,27 @@ import { MatMenu, MatMenuItem, MatMenuTrigger } from "@angular/material/menu";
 
 @Component({
   selector: 'app-dashboard',
-  imports: [MatMenuTrigger, MatMenuItem, CommonModule, MatIconModule, RouterModule, AsideComponent, EditInstallationComponent, FormsModule, MatMenu],
+  imports: [
+    MatMenuTrigger, 
+    MatMenuItem, 
+    CommonModule, 
+    MatIconModule, 
+    RouterModule, 
+    AsideComponent, 
+    EditInstallationComponent, 
+    AddInstallationComponent, 
+    DeleteInstallationComponent, 
+    FormsModule, 
+    MatMenu
+  ],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css'
 })
 export class DashboardComponent {
   installations: any[] = [];
   filteredInstallations: any[] = [];
+  rootInstallations: any[] = []; // Installations with parent='ROOT'
+  childInstallations: { [key: string]: any[] } = {}; // Installations grouped by parent
   searchTerm: string = '';
   installationId: string | null = null;
   userRole: string = 'user';
@@ -57,14 +71,50 @@ export class DashboardComponent {
       (data) => {
         console.log('Installations data:', data);
         this.installations = data;
-        this.filteredInstallations = data;
+        
+        // Group installations by parent
+        this.rootInstallations = [];
+        this.childInstallations = {};
+        
+        // First pass: identify root installations and create child installation map
+        this.installations.forEach(installation => {
+          console.log(`Processing installation: ${installation.name}, parent: ${installation.parent}`);
+          
+          if (installation.parent === 'ROOT') {
+            console.log(`Adding ${installation.name} as root installation`);
+            this.rootInstallations.push(installation);
+          } else {
+            console.log(`Adding ${installation.name} as child of ${installation.parent}`);
+            if (!this.childInstallations[installation.parent]) {
+              this.childInstallations[installation.parent] = [];
+            }
+            this.childInstallations[installation.parent].push(installation);
+          }
+          
+          // Initialize rooms array if not present
+          if (!installation.rooms) {
+            installation.rooms = [];
+          }
+        });
+        
+        // Second pass: add child installations to their parent's childInstallations array
+        this.rootInstallations.forEach(rootInstallation => {
+          console.log(`Setting up children for root installation: ${rootInstallation.name}`);
+          rootInstallation.childInstallations = this.childInstallations[rootInstallation._id] || [];
+          console.log(`${rootInstallation.name} has ${rootInstallation.childInstallations.length} child installations`);
+        });
+        
+        console.log('Root installations:', this.rootInstallations);
+        console.log('Child installations:', this.childInstallations);
+        
+        this.filteredInstallations = this.rootInstallations;
   
-        // Charger les rooms pour chaque installation
+        // Load rooms for each installation
         this.installations.forEach(installation => {
           this.installationService.getRoomsByInstallation(installation._id).subscribe(
             (rooms) => {
-              console.log(`Rooms for installation ${installation._id}:`, rooms);
-              installation.rooms = rooms; // Ajoute les rooms à l'installation
+              console.log(`Rooms for installation ${installation._id} (${installation.name}):`, rooms);
+              installation.rooms = rooms; // Add rooms to the installation
             },
             (error) => {
               console.error(`Error fetching rooms for installation ${installation._id}:`, error);
@@ -80,15 +130,30 @@ export class DashboardComponent {
 
   onSearch(): void {
     if (!this.searchTerm.trim()) {
-      this.filteredInstallations = this.installations;
+      this.filteredInstallations = this.rootInstallations;
       return;
     }
     
     const searchTermLower = this.searchTerm.toLowerCase().trim();
-    this.filteredInstallations = this.installations.filter(installation => 
-      installation.name.toLowerCase().includes(searchTermLower) ||
-      installation.parent.toLowerCase().includes(searchTermLower)
+    
+    // Filter root installations
+    this.filteredInstallations = this.rootInstallations.filter(installation => 
+      (installation.name && installation.name.toLowerCase().includes(searchTermLower)) ||
+      (installation.cluster && installation.cluster.toLowerCase().includes(searchTermLower))
     );
+    
+    // Also include root installations that have matching child installations
+    this.rootInstallations.forEach(rootInstallation => {
+      const childInstallations = this.childInstallations[rootInstallation._id] || [];
+      const hasMatchingChild = childInstallations.some(child => 
+        (child.name && child.name.toLowerCase().includes(searchTermLower)) ||
+        (child.cluster && child.cluster.toLowerCase().includes(searchTermLower))
+      );
+      
+      if (hasMatchingChild && !this.filteredInstallations.includes(rootInstallation)) {
+        this.filteredInstallations.push(rootInstallation);
+      }
+    });
   }
 
   goToInstallationRooms(installationId: string): void {
@@ -130,6 +195,57 @@ export class DashboardComponent {
       (data) => {
         console.log('Installations refreshed:', data);
         this.installations = data;
+        
+        // Group installations by parent
+        this.rootInstallations = [];
+        this.childInstallations = {};
+        
+        // First pass: identify root installations and create child installation map
+        this.installations.forEach(installation => {
+          console.log(`Refresh - Processing installation: ${installation.name}, parent: ${installation.parent}`);
+          
+          if (installation.parent === 'ROOT') {
+            console.log(`Refresh - Adding ${installation.name} as root installation`);
+            this.rootInstallations.push(installation);
+          } else {
+            console.log(`Refresh - Adding ${installation.name} as child of ${installation.parent}`);
+            if (!this.childInstallations[installation.parent]) {
+              this.childInstallations[installation.parent] = [];
+            }
+            this.childInstallations[installation.parent].push(installation);
+          }
+          
+          // Initialize rooms array if not present
+          if (!installation.rooms) {
+            installation.rooms = [];
+          }
+        });
+        
+        // Second pass: add child installations to their parent's childInstallations array
+        this.rootInstallations.forEach(rootInstallation => {
+          console.log(`Refresh - Setting up children for root installation: ${rootInstallation.name}`);
+          rootInstallation.childInstallations = this.childInstallations[rootInstallation._id] || [];
+          console.log(`Refresh - ${rootInstallation.name} has ${rootInstallation.childInstallations.length} child installations`);
+        });
+        
+        console.log('Refresh - Root installations:', this.rootInstallations);
+        console.log('Refresh - Child installations:', this.childInstallations);
+        
+        this.filteredInstallations = this.rootInstallations;
+        
+        // Reload rooms for each installation
+        this.installations.forEach(installation => {
+          this.installationService.getRoomsByInstallation(installation._id).subscribe(
+            (rooms) => {
+              console.log(`Refresh - Rooms for installation ${installation._id} (${installation.name}):`, rooms);
+              installation.rooms = rooms; // Add rooms to the installation
+            },
+            (error) => {
+              console.error(`Error fetching rooms for installation ${installation._id}:`, error);
+            }
+          );
+        });
+        
         this.onSearch(); // Re-apply current search filter
       },
       (error) => {

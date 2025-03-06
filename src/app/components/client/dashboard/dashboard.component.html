@@ -76,42 +76,85 @@
                   </button>
                 </div>
               
-                <div class="tree" *ngFor="let installation of filteredInstallations">
+                <!-- Root installations (clusters) -->
+                <div class="tree" *ngFor="let rootInstallation of filteredInstallations">
+                    <!-- Cluster (Root Installation) -->
                     <div class="tree-item root">
-                      <span class="item-name" (click)="goToInstallationRooms(installation._id)">
+                      <span class="item-name">
                         <mat-icon>business</mat-icon>
-                        {{ installation.name }}
+                        {{ rootInstallation.cluster || rootInstallation.name }}
                       </span>
                       <div class="item-actions">
-                        <button class="action-btn view-rooms" (click)="goToInstallationRooms(installation._id); $event.stopPropagation()">
-                          <mat-icon>meeting_room</mat-icon>
-                        </button>
-                        <button class="action-btn edit" *ngIf="canEditInstallation(installation)" (click)="openEditDialog(installation); $event.stopPropagation()">
+                        <button class="action-btn edit" *ngIf="canEditInstallation(rootInstallation)" (click)="openEditDialog(rootInstallation); $event.stopPropagation()">
                           <mat-icon>edit</mat-icon>
                         </button>
-                        <button class="action-btn delete" *ngIf="canDeleteInstallation()" (click)="openDeleteDialog(installation); $event.stopPropagation()">
+                        <button class="action-btn delete" *ngIf="canDeleteInstallation()" (click)="openDeleteDialog(rootInstallation); $event.stopPropagation()">
                           <mat-icon>delete</mat-icon>
                         </button>
                       </div>
                     </div>
-                  
-                    <!-- Ajoutez cette section si vous voulez que les rooms soient aussi cliquables -->
-                    <div class="tree-item child" *ngFor="let room of installation.rooms">
-                      <span class="item-name" (click)="goToInstallationRooms(installation._id)">
+                    
+                    <!-- Root Installation as a Child -->
+                    <div class="tree-item child">
+                      <span class="item-name" (click)="goToInstallationRooms(rootInstallation._id)">
+                        <mat-icon>domain</mat-icon>
+                        {{ rootInstallation.name }}
+                      </span>
+                      <span class="status" [ngClass]="rootInstallation.status">
+                        {{ rootInstallation.status }}
+                      </span>
+                    </div>
+                    
+                    <!-- Rooms for Root Installation -->
+                    <div class="tree-item grandchild" *ngFor="let room of rootInstallation.rooms">
+                      <span class="item-name" (click)="goToInstallationRooms(rootInstallation._id)">
                         <mat-icon>router</mat-icon>
                         {{ room.name }}
                       </span>
-                      <!-- <div class="item-actions">
-                        <button class="action-btn edit" (click)="openEditDialog(room); $event.stopPropagation()"></button>
-                        <button class="action-btn delete" (click)="openDeleteDialog(room._id); $event.stopPropagation()"></button>
-                      </div> -->
-                      <!-- Affichage des appareils pour chaque room -->
-                      <div class="device-list" *ngIf="room.devices">
+                      <!-- Devices for Room -->
+                      <div class="device-list" *ngIf="room.devices && room.devices.length > 0">
                         <div class="device" *ngFor="let device of room.devices">
                           <span>{{ device.name }}</span>
                         </div>
                       </div>
                     </div>
+                    
+                    <!-- Child Installations -->
+                    <ng-container *ngIf="childInstallations[rootInstallation._id] && childInstallations[rootInstallation._id].length > 0">
+                      <div *ngFor="let childInstallation of childInstallations[rootInstallation._id]">
+                        <div class="tree-item child">
+                          <span class="item-name" (click)="goToInstallationRooms(childInstallation._id)">
+                            <mat-icon>domain</mat-icon>
+                            {{ childInstallation.name }}
+                          </span>
+                          <span class="status" [ngClass]="childInstallation.status">
+                            {{ childInstallation.status }}
+                          </span>
+                          <div class="item-actions">
+                            <button class="action-btn edit" *ngIf="canEditInstallation(childInstallation)" (click)="openEditDialog(childInstallation); $event.stopPropagation()">
+                              <mat-icon>edit</mat-icon>
+                            </button>
+                            <button class="action-btn delete" *ngIf="canDeleteInstallation()" (click)="openDeleteDialog(childInstallation); $event.stopPropagation()">
+                              <mat-icon>delete</mat-icon>
+                            </button>
+                          </div>
+                        </div>
+                        
+                        <!-- Rooms for Child Installation -->
+                        <div class="tree-item grandchild" *ngFor="let room of childInstallation.rooms">
+                          <span class="item-name" (click)="goToInstallationRooms(childInstallation._id)">
+                            <mat-icon>router</mat-icon>
+                            {{ room.name }}
+                          </span>
+                          <!-- Devices for Room -->
+                          <div class="device-list" *ngIf="room.devices && room.devices.length > 0">
+                            <div class="device" *ngFor="let device of room.devices">
+                              <span>{{ device.name }}</span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </ng-container>
                   </div>
                   
               </div>

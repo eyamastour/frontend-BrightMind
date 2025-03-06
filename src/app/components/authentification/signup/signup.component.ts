@@ -83,7 +83,19 @@ export class SignupComponent {
       this.initialCountry = intlTelInput(this.phoneInput.nativeElement, {
         initialCountry: 'it',
         separateDialCode: true,
+        dropdownContainer: document.body,
+        // Add additional options to ensure dropdown is visible
+        autoPlaceholder: "aggressive"
       });
+      
+      // Add a small delay to ensure the dropdown is properly styled
+      setTimeout(() => {
+        const dropdownElements = document.querySelectorAll('.iti__country-list, .iti__country');
+        dropdownElements.forEach(el => {
+          (el as HTMLElement).style.backgroundColor = 'white';
+          (el as HTMLElement).style.opacity = '1';
+        });
+      }, 500);
     }
   }
 

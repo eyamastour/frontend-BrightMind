@@ -33,7 +33,10 @@ export class InstallationService {
 
 
     addInstallation(installation: Partial<Installation>): Observable<Installation> {
-        return this.http.post<Installation>(this.apiUrl, installation);
+        console.log('Adding installation with parent:', installation.parent);
+        return this.http.post<Installation>(this.apiUrl, installation).pipe(
+            tap(response => console.log('Installation added, response:', response))
+        );
     }
 
     updateInstallation(id: string, installation: Partial<Installation>): Observable<Installation> {

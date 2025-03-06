@@ -44,13 +44,24 @@ export class RoomDevicesComponent implements OnInit {
   activeAlarms: Set<string> = new Set();
 
   toggleDeviceConnection(device: Device): void {
+    // Only allow toggling for actuator devices
+    if (device.deviceType !== 'actuator') {
+      return;
+    }
+    
     device.enableConnection = !device.enableConnection;
     device.status = device.enableConnection ? 'active' : 'inactive';
+    
+    // For actuators, also toggle the value (on/off)
+    if (typeof device.value === 'boolean') {
+      device.value = !device.value;
+    }
     
     if (device._id) {
       this.deviceService.updateDevice(device._id, {
         enableConnection: device.enableConnection,
-        status: device.status
+        status: device.status,
+        value: device.value
       }).subscribe({
         next: (updatedDevice) => {
           const index = this.devices.findIndex(d => d._id === updatedDevice._id);
@@ -64,6 +75,9 @@ export class RoomDevicesComponent implements OnInit {
           // Revert the changes if update fails
           device.enableConnection = !device.enableConnection;
           device.status = device.enableConnection ? 'active' : 'inactive';
+          if (typeof device.value === 'boolean') {
+            device.value = !device.value;
+          }
         }
       });
     }
@@ -99,11 +113,18 @@ export class RoomDevicesComponent implements OnInit {
     this.isLoading = true;
     this.deviceService.getDevicesByRoom(this.roomId).subscribe({
       next: (devices) => {
+        console.log('Loaded devices:', devices);
         this.devices = devices.map(device => ({
           ...device,
           enableConnection: true,
           zone: device.zone || 'Default Zone'
         }));
+        
+        // Log device types to debug
+        this.devices.forEach(device => {
+          console.log(`Device ${device.name} has type: "${device.type}" and deviceType: "${device.deviceType}"`);
+        });
+        
         this.updateFilteredDevices();
       },
       error: (error) => {
@@ -196,8 +217,14 @@ export class RoomDevicesComponent implements OnInit {
     });
   }
 
+  openDeviceGraph(device: Device): void {
+    console.log('Opening graph for device:', device);
+    // Navigate to the data-graph component with the device ID
+    this.router.navigate(['/client/data-graph', device._id]);
+  }
+
   private checkThreshold(device: Device): void {
-    // Only check threshold for sensors (numerical values)
+    // Only check threshold for sensor devices (numerical values)
     if (device.deviceType !== 'sensor' || typeof device.value !== 'number') {
       return;
     }

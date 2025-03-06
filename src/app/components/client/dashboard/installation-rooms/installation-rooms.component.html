@@ -109,13 +109,13 @@
                     <button class="view-devices-btn" (click)="viewDevices(room._id!)" *ngIf="room._id">
                       <mat-icon>visibility</mat-icon>
                     </button>
-                    <ng-container *ngIf="getDevices(room).length > 0">
+                    <!-- <ng-container *ngIf="getDevices(room).length > 0">
                       <button class="graph-btn" *ngFor="let device of getDevices(room)" 
                         (click)="viewDeviceGraph(getDeviceId(device))" 
                         matTooltip="View device graph">
                         <mat-icon>show_chart</mat-icon>
                       </button>
-                    </ng-container>
+                    </ng-container> -->
                   </div>
                 </div>
               </td>

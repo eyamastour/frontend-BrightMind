@@ -21,7 +21,7 @@ import { Device } from '../../../../../core/models/device.model';
 
         <mat-form-field appearance="fill" class="full-width">
           <mat-label>Type</mat-label>
-          <mat-select formControlName="type" required>
+          <mat-select formControlName="deviceType" required>
             <mat-option value="sensor">Sensor</mat-option>
             <mat-option value="actuator">Actuator</mat-option>
           </mat-select>
@@ -76,7 +76,7 @@ export class EditDeviceComponent {
   ) {
     this.deviceForm = this.fb.group({
       name: [data.name, Validators.required],
-      type: [data.type, Validators.required],
+      type: [data.deviceType, Validators.required],
       zone: [data.zone],
       value: [data.value],
       enableConnection: [data.enableConnection]

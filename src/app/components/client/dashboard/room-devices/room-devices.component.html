@@ -86,12 +86,31 @@
                         <div class="param-value">{{ device.value || 'N/A' }}</div>
                       </td>
                       <td>
-                        <div class="param-value">
-                          <div class="toggle-switch" [class.active]="device.enableConnection" (click)="toggleDeviceConnection(device)">
-                            <div class="toggle-slider"></div>
+                        <!-- Parameter 2 depends on device type -->
+                        <ng-container *ngIf="device.deviceType === 'actuator'">
+                          <div class="param-value">
+                            <div class="toggle-switch" [class.active]="device.enableConnection" (click)="toggleDeviceConnection(device)">
+                              <div class="toggle-slider"></div>
+                            </div>
                           </div>
-                        </div>
-                        <div class="param-label">Enable Connection</div>
+                          <div class="param-label">On/Off</div>
+                        </ng-container>
+                        
+                        <ng-container *ngIf="device.deviceType === 'sensor'">
+                          <div class="param-value">
+                            <div class="toggle-switch disabled">
+                              <div class="toggle-slider"></div>
+                            </div>
+                          </div>
+                          <div class="param-label">Sensor (Read-only)</div>
+                        </ng-container>
+                        
+                        <ng-container *ngIf="device.deviceType !== 'actuator' && device.deviceType !== 'sensor'">
+                          <div class="param-value transparent">
+                            <span>-</span>
+                          </div>
+                          <div class="param-label">Not applicable</div>
+                        </ng-container>
                       </td>
                       <td>
                         <div class="param-value">{{ device.type || 'N/A' }}</div>
@@ -101,12 +120,17 @@
                         <div class="timestamp">09:48:57</div>
                       </td>
                       <td>
-                        <div class="action-buttons" *ngIf="isAdmin">
-                          <button class="action-btn edit" (click)="openEditDialog(device)"></button>
-                          <button class="action-btn delete" (click)="openDeleteDialog(device)" matTooltip="Delete Device">
-                            <mat-icon>delete</mat-icon>
+                        <div class="action-buttons">
+                          <button class="graph-btn" (click)="openDeviceGraph(device)" matTooltip="View Device Graph">
+                            <mat-icon>show_chart</mat-icon>
                           </button>
-                          <button class="action-btn notification" (click)="openNotificationDialog(device)"></button>
+                          <ng-container *ngIf="isAdmin">
+                            <button class="action-btn edit" (click)="openEditDialog(device)"></button>
+                            <button class="action-btn delete" (click)="openDeleteDialog(device)" matTooltip="Delete Device">
+                              <mat-icon>delete</mat-icon>
+                            </button>
+                            <button class="action-btn notification" (click)="openNotificationDialog(device)"></button>
+                          </ng-container>
                         </div>
                       </td>
                     </tr>

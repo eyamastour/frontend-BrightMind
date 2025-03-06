@@ -117,3 +117,38 @@ button[type="submit"][disabled] {
     width: 100%;
   }
 }
+
+/* Fix for intl-tel-input dropdown transparency */
+.iti__country-list {
+  background-color: white !important;
+  border: 1px solid #ccc !important;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2) !important;
+}
+
+.iti__country {
+  padding: 8px 10px !important;
+}
+
+.iti__country:hover {
+  background-color: #f1f1f1 !important;
+}
+
+.iti__flag-container {
+  background-color: white !important;
+}
+
+.iti__selected-flag {
+  background-color: white !important;
+  border-right: 1px solid #ccc !important;
+}
+
+.iti__search-container {
+  background-color: white !important;
+  padding: 10px !important;
+}
+
+.iti__search-input {
+  background-color: white !important;
+  border: 1px solid #ccc !important;
+  padding: 6px 10px !important;
+}

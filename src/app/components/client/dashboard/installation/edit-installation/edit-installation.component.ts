@@ -21,8 +21,17 @@ import { Installation } from '../../../../../core/models/installation';
         <div class="form-content">
           <div class="form-field-container">
             <mat-form-field appearance="outline" class="form-field">
-              <mat-label>Installation Name</mat-label>
+              <mat-label>Cluster Name</mat-label>
               <mat-icon matPrefix class="field-icon">business</mat-icon>
+              <input matInput formControlName="cluster" placeholder="Enter cluster name">
+              <mat-error *ngIf="installationForm.get('cluster')?.hasError('required')">
+                Cluster name is required
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="form-field">
+              <mat-label>Installation Name</mat-label>
+              <mat-icon matPrefix class="field-icon">router</mat-icon>
               <input matInput formControlName="name" placeholder="Enter installation name">
               <mat-error *ngIf="installationForm.get('name')?.hasError('required')">
                 Name is required
@@ -198,6 +207,7 @@ export class EditInstallationComponent {
     @Inject(MAT_DIALOG_DATA) public data: Installation
   ) {
     this.installationForm = this.fb.group({
+      cluster: [data.cluster || data.name, Validators.required],
       name: [data.name, Validators.required]
     });
   }

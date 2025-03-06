@@ -307,10 +307,16 @@
   font-size: 0.75rem;
   padding: 0.25rem 0.5rem;
   border-radius: 12px;
+  margin-left: auto;
 }
 
 .status.online {
   background-color: #00b77e;
+  color: white;
+}
+
+.status.offline {
+  background-color: #e74c3c;
   color: white;
 }
 
@@ -388,6 +394,9 @@
   position: relative;
   margin-left: 2rem;
   padding-left: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .tree-item.child::before {
@@ -411,6 +420,37 @@
 }
 
 .tree-item.child:last-child::after {
+  height: 100%;
+}
+
+/* Styles for grandchild items (rooms of child installations) */
+.tree-item.grandchild {
+  position: relative;
+  margin-left: 4rem;
+  padding-left: 1.5rem;
+}
+
+.tree-item.grandchild::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 1.5rem;
+  height: 1px;
+  background-color: #e0e0e0;
+}
+
+.tree-item.grandchild::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: -50%;
+  width: 1px;
+  height: calc(100% + 50%);
+  background-color: #e0e0e0;
+}
+
+.tree-item.grandchild:last-child::after {
   height: 100%;
 }
 /* Supprimez le soulignement des liens */
