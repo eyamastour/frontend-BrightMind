@@ -62,41 +62,28 @@ export class DataGraphComponent implements OnInit, OnDestroy {
     responsive: true,
     maintainAspectRatio: false,
     scales: {
-      ['y']: {
+      y: {
         type: 'linear' as const,
         display: true,
         position: 'left',
-        beginAtZero: true,
+        min: 0,
+        max: 1,
         ticks: {
+          stepSize: 1,
           font: {
-            size: 12
+            size: 14,
+            weight: 'bold'
           },
           callback: (value: number | string) => {
-            const numValue = Number(value);
-            if (isNaN(numValue)) return value;
-
-            if (this.selectedDevice?.deviceType === 'actuator') {
-              return numValue === 1 ? 'ON' : 'OFF';
-            }
-
-            const deviceType = this.selectedDevice?.type?.toLowerCase() || '';
-            switch (deviceType) {
-              case 'temperature':
-                return `${numValue}°C`;
-              case 'humidity':
-                return `${numValue}%`;
-              case 'light':
-                return `${numValue} lux`;
-              default:
-                return numValue;
-            }
+            return value === 1 ? 'ON' : 'OFF';
           }
         },
         grid: {
-          color: '#e0e0e0'
+          color: '#e0e0e0',
+          lineWidth: 2
         }
       },
-      ['x']: {
+      x: {
         type: 'category' as const,
         ticks: {
           font: {
@@ -106,20 +93,13 @@ export class DataGraphComponent implements OnInit, OnDestroy {
           minRotation: 45
         },
         grid: {
-          color: '#e0e0e0'
+          display: false
         }
       }
     },
     plugins: {
       legend: {
-        display: true,
-        position: 'top',
-        labels: {
-          font: {
-            size: 14
-          },
-          padding: 20
-        }
+        display: false
       },
       tooltip: {
         enabled: true,
@@ -137,18 +117,7 @@ export class DataGraphComponent implements OnInit, OnDestroy {
           label: (context: any) => {
             const label = context.dataset.label || '';
             const value = context.parsed.y;
-            const deviceType = label.toLowerCase();
-            
-            if (deviceType.includes('temperature')) {
-              return `${label}: ${value}°C`;
-            } else if (deviceType.includes('humidity')) {
-              return `${label}: ${value}%`;
-            } else if (deviceType.includes('status')) {
-              return `${label}: ${value === 1 ? 'ON' : 'OFF'}`;
-            } else if (deviceType.includes('light')) {
-              return `${label}: ${value} lux`;
-            }
-            return `${label}: ${value}`;
+            return `${label}: ${value === 1 ? 'ON' : 'OFF'}`;
           },
           title: (tooltipItems: any[]) => {
             const item = tooltipItems[0];
@@ -164,32 +133,7 @@ export class DataGraphComponent implements OnInit, OnDestroy {
         }
       },
       datalabels: {
-        display: true,
-        align: 'top' as const,
-        anchor: 'end' as const,
-        formatter: (value: number) => {
-          if (this.selectedDevice?.deviceType === 'actuator') {
-            return value === 1 ? 'ON' : 'OFF';
-          }
-          const deviceType = this.selectedDevice?.type?.toLowerCase() || '';
-          switch (deviceType) {
-            case 'temperature':
-              return `${value}°C`;
-            case 'humidity':
-              return `${value}%`;
-            case 'light':
-              return `${value} lux`;
-            default:
-              return value.toString();
-          }
-        },
-        color: '#666',
-        font: {
-          size: 11
-        },
-        padding: {
-          top: 5
-        }
+        display: false
       }
     },
     interaction: {
@@ -198,25 +142,23 @@ export class DataGraphComponent implements OnInit, OnDestroy {
       axis: 'x'
     },
     animation: {
-      duration: 750
+      duration: 500
+    },
+    elements: {
+      line: {
+        tension: 0, // straight lines
+        borderWidth: 2,
+        fill: false,
+        stepped: 'before' as const // This creates the step effect for the line
+      },
+      point: {
+        radius: 0, // hide points
+        hitRadius: 10
+      }
     }
   };
 
   public lineChartType: ChartType = 'line';
-
-  private getUnitByDeviceType(type?: string): string {
-    if (!type) return '';
-    switch(type.toLowerCase()) {
-      case 'temperature':
-        return '°C';
-      case 'humidity':
-        return '%';
-      case 'light':
-        return ' lux';
-      default:
-        return '';
-    }
-  }
 
   constructor(
     private deviceService: DeviceService,
@@ -259,15 +201,17 @@ export class DataGraphComponent implements OnInit, OnDestroy {
     this.hasError = false;
     this.deviceService.getDevicesByInstallation(installationId).subscribe({
       next: (devices: Device[]) => {
-        this.devices = devices;
-        if (devices.length > 0) {
-          const device = devices[0];
+        // Filter to only include actuator devices (binary state devices)
+        this.devices = devices.filter(device => device.deviceType === 'actuator');
+        
+        if (this.devices.length > 0) {
+          const device = this.devices[0];
           this.selectedDevice = device;
           this.loadDeviceHistory(device._id!, this.timeRange);
         } else {
           this.isLoading = false;
           this.hasError = true;
-          this.errorMessage = 'No devices found for this installation';
+          this.errorMessage = 'No binary state devices found for this installation';
         }
       },
       error: (error: Error) => {
@@ -330,114 +274,46 @@ export class DataGraphComponent implements OnInit, OnDestroy {
       }).format(date);
     };
 
-    const labels = history.map(h => formatDate(new Date(h.timestamp)));
+    // Filter out duplicate consecutive values to simplify the graph
+    const filteredHistory = history.reduce((acc: DeviceHistory[], current, index) => {
+      // Always include the first item
+      if (index === 0) {
+        acc.push(current);
+        return acc;
+      }
+      
+      // Include if value is different from the previous one
+      const prev = acc[acc.length - 1];
+      if (prev.value !== current.value) {
+        acc.push(current);
+      }
+      
+      return acc;
+    }, []);
+
+    const labels = filteredHistory.map(h => formatDate(new Date(h.timestamp)));
     
     // Get the current value (most recent)
-    const currentValue = history[history.length - 1]?.value;
-    const currentValueDisplay = this.selectedDevice?.deviceType === 'actuator' 
-      ? (currentValue === true ? 'ON' : 'OFF')
-      : `${currentValue}${this.getUnitByDeviceType(this.selectedDevice?.type)}`;
+    const currentValue = filteredHistory[filteredHistory.length - 1]?.value;
+    const currentValueDisplay = currentValue === true ? 'ON' : 'OFF';
 
-    // Convert to numerical values for the chart
-    const chartValues = history.map(h => {
-      if (this.selectedDevice?.deviceType === 'actuator') {
-        return h.value === true ? 1 : 0;
-      } else {
-        return typeof h.value === 'number' ? h.value : 0;
-      }
-    });
+    // Convert to numerical values for the chart (1 for ON, 0 for OFF)
+    const chartValues = filteredHistory.map(h => h.value === true ? 1 : 0);
 
-    const deviceType = this.selectedDevice?.type || '';
-    let yAxisLabel = '';
-    let chartType: ChartType = 'line';
-    let chartOptions = { ...this.lineChartOptions };
-
-    // Add current value to the label
+    // Set device name and current status
     const deviceName = this.selectedDevice?.name || 'Device';
     const currentValueLabel = ` (Current: ${currentValueDisplay})`;
-
-    if (this.selectedDevice?.deviceType === 'actuator') {
-      yAxisLabel = 'Status';
-      chartType = 'bar';
-      if (chartOptions.scales?.['y']) {
-        chartOptions.scales['y'].ticks = {
-          ...chartOptions.scales['y'].ticks,
-          callback: (value: number | string) => value === 1 ? 'ON' : 'OFF'
-        };
-      }
-    } else {
-      // Set label based on sensor type
-      switch(deviceType.toLowerCase()) {
-        case 'temperature':
-          yAxisLabel = 'Temperature (°C)';
-          break;
-        case 'humidity':
-          yAxisLabel = 'Humidity (%)';
-          break;
-        case 'light':
-          yAxisLabel = 'Light Level';
-          break;
-        default:
-          yAxisLabel = 'Value';
-      }
-    }
-
-    this.lineChartType = chartType;
-    this.lineChartOptions = chartOptions;
-
-    const color = this.selectedDevice?.deviceType === 'actuator' ? 
-      'rgb(255, 159, 64)' : 'rgb(75, 192, 192)';
-    const backgroundColor = this.selectedDevice?.deviceType === 'actuator' ?
-      'rgba(255, 159, 64, 0.5)' : 'rgba(75, 192, 192, 0.5)';
 
     this.lineChartData = {
       labels: labels,
       datasets: [{
         data: chartValues,
-        label: `${deviceName} - ${yAxisLabel}${currentValueLabel}`,
+        label: `${deviceName} Status${currentValueLabel}`,
         fill: false,
-        tension: 0.4,
-        borderColor: color,
-        backgroundColor: backgroundColor,
-        borderWidth: 2,
-        pointRadius: 3,
-        pointHoverRadius: 5,
-        pointBackgroundColor: color,
-        pointHoverBackgroundColor: color,
-        pointBorderColor: '#fff',
-        pointHoverBorderColor: '#fff',
-        pointBorderWidth: 2,
-        pointHoverBorderWidth: 2,
-        segment: {
-          borderColor: () => '#666'
-        },
-        datalabels: {
-          align: 'top',
-          anchor: 'end',
-          formatter: (value: number): string => {
-            if (this.selectedDevice?.deviceType === 'actuator') {
-              return value === 1 ? 'ON' : 'OFF';
-            }
-            const deviceType = this.selectedDevice?.type?.toLowerCase() || '';
-            switch (deviceType) {
-              case 'temperature':
-                return `${value}°C`;
-              case 'humidity':
-                return `${value}%`;
-              case 'light':
-                return `${value} lux`;
-              default:
-                return value.toString();
-            }
-          },
-          color: '#666',
-          font: {
-            size: 11
-          },
-          padding: {
-            top: 5
-          }
-        }
+        stepped: 'before' as const,
+        borderColor: '#007bff',
+        backgroundColor: 'rgba(0, 123, 255, 0.1)',
+        borderWidth: 3
       }]
     };
 

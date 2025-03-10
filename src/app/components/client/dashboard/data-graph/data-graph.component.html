@@ -1,17 +1,17 @@
 <div class="data-graph-container">
   <div class="controls">
     <div class="device-selector">
-      <label for="device">Select Device:</label>
+      <label for="device">Select Binary State Device:</label>
       <select id="device" (change)="onDeviceSelect($event)" [disabled]="isLoading">
-        <option value="" disabled selected *ngIf="devices.length === 0">No devices available</option>
+        <option value="" disabled selected *ngIf="devices.length === 0">No binary state devices available</option>
         <option *ngFor="let device of devices" [value]="device._id">
-          {{ device.name }} ({{ device.type }})
+          {{ device.name }}
         </option>
       </select>
     </div>
     
     <div class="time-range">
-      <label>Time Range:</label>
+      <label>History Period:</label>
       <button 
         [class.active]="timeRange === 1" 
         (click)="updateTimeRange(1)"
@@ -26,6 +26,8 @@
         [disabled]="isLoading || !selectedDevice">30d</button>
     </div>
   </div>
+
+  <h3 *ngIf="selectedDevice" class="graph-title">On/Off Status History</h3>
 
   <div class="chart-container" [class.loading]="isLoading" [class.error]="hasError">
     @if (hasError) {

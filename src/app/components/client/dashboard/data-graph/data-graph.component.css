@@ -5,6 +5,7 @@
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   margin: 16px;
   transition: box-shadow 0.3s ease;
+  border: 1px solid #e0e0e0;
 }
 
 .data-graph-container:hover {
@@ -114,14 +115,26 @@
   box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.2);
 }
 
+.graph-title {
+  font-size: 18px;
+  font-weight: 500;
+  color: #333;
+  margin: 10px 0;
+  text-align: center;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #eef2f7;
+}
+
 .chart-container {
   position: relative;
-  height: 400px;
+  height: 300px;
   width: 100%;
   margin-top: 16px;
   border-radius: 8px;
   background: #ffffff;
   transition: all 0.3s ease;
+  border: 1px solid #e0e0e0;
+  padding: 10px;
 }
 
 @media (max-width: 768px) {
@@ -140,6 +153,7 @@ canvas {
   width: 100% !important;
   height: 100% !important;
   border-radius: 8px;
+  background-color: #fafafa;
 }
 
 /* Loading state */
