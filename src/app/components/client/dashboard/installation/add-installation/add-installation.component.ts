@@ -339,6 +339,7 @@ export class AddInstallationComponent implements OnInit {
         const selectedCluster = this.existingClusters.find(c => c._id === formValue.existingClusterId);
         if (selectedCluster) {
           console.log('Selected cluster:', selectedCluster);
+          // When adding to an existing cluster, use the cluster's name as the cluster value
           formValue.cluster = selectedCluster.cluster || selectedCluster.name;
           formValue.parent = selectedCluster._id; // Set parent to the existing cluster ID
           console.log('Setting parent to:', formValue.parent);
@@ -346,8 +347,16 @@ export class AddInstallationComponent implements OnInit {
       } else {
         // For new clusters, ensure parent is 'ROOT'
         formValue.parent = 'ROOT';
+        // For new clusters, set the cluster name to the provided value
+        // This ensures it's recognized as a cluster
+        formValue.cluster = formValue.cluster || formValue.name;
         console.log('Setting parent to ROOT for new cluster');
       }
+      
+      // Set a type field to distinguish between clusters and installations
+      // If it's a new cluster or being added to ROOT, it's a cluster
+      // Otherwise, it's an installation within a cluster
+      formValue.isCluster = this.isNewCluster() || formValue.parent === 'ROOT';
       
       // Remove the installationType and existingClusterId fields before sending to API
       delete formValue.installationType;

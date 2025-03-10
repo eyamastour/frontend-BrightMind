@@ -90,7 +90,7 @@
               <td>
                 <div class="room-name">
                   <mat-icon class="room-icon">meeting_room</mat-icon>
-                  {{ room.name }}
+                  <div class="room-name-text" [matTooltip]="room.name">{{ room.name }}</div>
                   <div class="action-buttons" *ngIf="isAdmin()">
                     <button class="edit-btn" (click)="openEditRoomDialog(room)">
                       <mat-icon>edit</mat-icon>
@@ -101,7 +101,11 @@
                   </div>
                 </div>
               </td>
-              <td>{{ room.description || 'No description' }}</td>
+              <td>
+                <div class="room-description" [matTooltip]="room.description || 'No description'">
+                  {{ room.description || 'No description' }}
+                </div>
+              </td>
               <td>
                 <div class="devices-cell">
                   <span>{{ room.devices?.length || 0 }} devices</span>

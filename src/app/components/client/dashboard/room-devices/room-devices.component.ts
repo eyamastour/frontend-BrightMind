@@ -49,38 +49,17 @@ export class RoomDevicesComponent implements OnInit {
       return;
     }
     
+    // Only toggle the enableConnection property for UI representation
+    // without changing the status (active/inactive)
     device.enableConnection = !device.enableConnection;
-    device.status = device.enableConnection ? 'active' : 'inactive';
     
-    // For actuators, also toggle the value (on/off)
+    // For actuators, also toggle the value in UI only (on/off)
     if (typeof device.value === 'boolean') {
       device.value = !device.value;
     }
     
-    if (device._id) {
-      this.deviceService.updateDevice(device._id, {
-        enableConnection: device.enableConnection,
-        status: device.status,
-        value: device.value
-      }).subscribe({
-        next: (updatedDevice) => {
-          const index = this.devices.findIndex(d => d._id === updatedDevice._id);
-          if (index !== -1) {
-            this.devices[index] = { ...this.devices[index], ...updatedDevice };
-          }
-          this.updateFilteredDevices();
-        },
-        error: (error) => {
-          console.error('Error updating device connection:', error);
-          // Revert the changes if update fails
-          device.enableConnection = !device.enableConnection;
-          device.status = device.enableConnection ? 'active' : 'inactive';
-          if (typeof device.value === 'boolean') {
-            device.value = !device.value;
-          }
-        }
-      });
-    }
+    // No backend update - only UI representation is changed
+    this.updateFilteredDevices();
   }
 
   constructor(

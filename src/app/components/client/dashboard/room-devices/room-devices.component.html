@@ -129,7 +129,8 @@
                             <button class="action-btn delete" (click)="openDeleteDialog(device)" matTooltip="Delete Device">
                               <mat-icon>delete</mat-icon>
                             </button>
-                            <button class="action-btn notification" (click)="openNotificationDialog(device)"></button>
+                            <!-- Only show notification/alarm button for sensor devices -->
+                            <button *ngIf="device.deviceType === 'sensor'" class="action-btn notification" (click)="openNotificationDialog(device)" matTooltip="Set Alarm Threshold"></button>
                           </ng-container>
                         </div>
                       </td>

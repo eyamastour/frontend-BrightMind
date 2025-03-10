@@ -4,7 +4,7 @@
     <header class="top-bar">
       <div class="breadcrumb">
           <mat-icon>home</mat-icon>
-          <span>User Permisions</span>
+          <span>User Permissions</span>
       </div>
       <div class="header-right">
           <div class="user-profile">
@@ -23,57 +23,92 @@
   </header>
 
   <div class="content">
-    <h1>User Permisions</h1>
-    <div class="bg-white">
-      <div *ngIf="loading" class="text-center">
-        <div class="loading-spinner"></div>
-      </div>
+    <h1>User Permissions</h1>
+    
+    <div *ngIf="error" class="error-message">
+      {{ error }}
+    </div>
 
-      <div *ngIf="error" class="error-message">
-        {{ error }}
-      </div>
+    <div class="permission-container">
+      <!-- User List Section -->
+      <div class="user-list-section">
+        <h2>Users</h2>
+        <div *ngIf="loading" class="loading-spinner-container">
+          <div class="loading-spinner"></div>
+        </div>
 
-      <div *ngIf="!loading && !error">
-        <table>
-          <thead>
-            <tr>
-              <th>Username</th>
-              <th>Email</th>
-              <th>Rôle</th>
-              <th>Statut</th>
-            </tr>
-          </thead>
-          <tbody class="bg-white divide-y divide-gray-200">
-            <tr *ngFor="let user of users">
-              <td>
-                <div class="user-info">
-                  <div class="avatar-container">
-                    <img class="user-avatar" [src]="user.avatar || 'assets/UserAvatar.png'" alt="User avatar">
-                  </div>
-                  <div class="user-details">
-                    <div class="user-name">{{ user.username }}</div>
-                  </div>
-                </div>
-              </td>
-              <td>
+        <div *ngIf="!loading" class="user-list">
+          <div *ngFor="let user of users" 
+               class="user-item" 
+               [class.selected]="selectedUser && selectedUser._id === user._id"
+               (click)="selectUser(user)">
+            <div class="user-info">
+              <div class="avatar-container">
+                <img class="user-avatar" [src]="user.avatar || 'assets/UserAvatar.png'" alt="User avatar">
+              </div>
+              <div class="user-details">
+                <div class="user-name">{{ user.username || user.email }}</div>
                 <div class="user-email">{{ user.email }}</div>
-              </td>
-              <td>
-                <mat-select [(ngModel)]="user.role" (selectionChange)="updateUserRole(user, $event.value)"
-                  class="role-select">
-                  <mat-option *ngFor="let role of availableRoles" [value]="role">
-                    {{ role }}
-                  </mat-option>
-                </mat-select>
-              </td>
-              <td>
-                <span class="status-badge" [ngClass]="user.isVerified ? 'status-active' : 'status-inactive'">
-                  {{ user.isVerified ? 'Actif' : 'Inactif' }}
-                </span>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+              </div>
+            </div>
+            <div class="user-role">
+              <mat-select [(ngModel)]="user.role" 
+                         (selectionChange)="updateUserRole(user, $event.value)"
+                         class="role-select">
+                <mat-option *ngFor="let role of availableRoles" [value]="role">
+                  {{ role }}
+                </mat-option>
+              </mat-select>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Installation Permissions Section -->
+      <div class="permissions-section">
+        <h2>Installation Permissions</h2>
+        
+        <div *ngIf="!selectedUser" class="no-selection-message">
+          <p>Select a user to manage their installation permissions</p>
+        </div>
+
+        <div *ngIf="selectedUser" class="permissions-content">
+          <div class="selected-user-info">
+            <h3>{{ selectedUser.username || selectedUser.email }}</h3>
+            <p>{{ selectedUser.email }}</p>
+          </div>
+
+          <!-- Current Permissions -->
+          <div class="current-permissions">
+            <h4>Current Permissions</h4>
+            <div *ngIf="selectedUser.installationPermissions && selectedUser.installationPermissions.length > 0" class="permission-chips">
+              <div *ngFor="let permission of selectedUser.installationPermissions" class="permission-chip">
+                <span>{{ permission.name || getInstallationName(permission) }}</span>
+                <button class="remove-permission" (click)="removePermission(selectedUser, permission._id || permission)">
+                  <mat-icon>close</mat-icon>
+                </button>
+              </div>
+            </div>
+            <div *ngIf="!selectedUser.installationPermissions || selectedUser.installationPermissions.length === 0" class="no-permissions">
+              <p>No installation permissions assigned</p>
+            </div>
+          </div>
+
+          <!-- Add New Permission -->
+          <div class="add-permission">
+            <h4>Add New Permission</h4>
+            <div class="add-permission-form">
+              <mat-select [(ngModel)]="selectedInstallation" placeholder="Select installation">
+                <mat-option *ngFor="let installation of installations" [value]="installation._id">
+                  {{ installation.name }} ({{ installation.isCluster ? 'Cluster' : 'Installation' }})
+                </mat-option>
+              </mat-select>
+              <button class="btn-add" (click)="addPermission()" [disabled]="!selectedInstallation">
+                <mat-icon>add</mat-icon> Add Permission
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>

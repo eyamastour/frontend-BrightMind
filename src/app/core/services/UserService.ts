@@ -33,8 +33,26 @@ export class UserService {
     return this.http.get<any>(this.adminUrl);
   }
 
-  addUserPermission(installationId: string, email: string): Observable<any> {
-    return this.http.post<any>(`${this.apiUrl}/permission`, { installationId, email });
+  // Get all installations a user has access to
+  getUserInstallations(): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/installations`);
+  }
+
+  // Add installation permission for a user (admin only)
+  addInstallationPermission(userId: string, installationId: string): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/permissions`, { userId, installationId });
+  }
+
+  // Remove installation permission for a user (admin only)
+  removeInstallationPermission(userId: string, installationId: string): Observable<any> {
+    return this.http.delete<any>(`${this.apiUrl}/permissions`, { 
+      body: { userId, installationId } 
+    });
+  }
+
+  // Get all users with their installation permissions (admin only)
+  getUsersWithPermissions(): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/permissions`);
   }
 
   updateUser(userId: string, userData: any): Observable<any> {

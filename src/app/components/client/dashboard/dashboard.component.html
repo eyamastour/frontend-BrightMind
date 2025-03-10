@@ -97,7 +97,7 @@
                     <!-- Root Installation as a Child -->
                     <div class="tree-item child">
                       <span class="item-name" (click)="goToInstallationRooms(rootInstallation._id)">
-                        <mat-icon>domain</mat-icon>
+                        <mat-icon>dns</mat-icon>
                         {{ rootInstallation.name }}
                       </span>
                       <span class="status" [ngClass]="rootInstallation.status">
@@ -124,7 +124,7 @@
                       <div *ngFor="let childInstallation of childInstallations[rootInstallation._id]">
                         <div class="tree-item child">
                           <span class="item-name" (click)="goToInstallationRooms(childInstallation._id)">
-                            <mat-icon>domain</mat-icon>
+                            <mat-icon>dns</mat-icon>
                             {{ childInstallation.name }}
                           </span>
                           <span class="status" [ngClass]="childInstallation.status">

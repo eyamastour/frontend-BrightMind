@@ -23,6 +23,8 @@ export class InstallationService {
     constructor(private http: HttpClient) {}
 
     getInstallations(): Observable<Installation[]> {
+        // This will return all installations for admin users
+        // and only installations the user has permission for if they're a regular user
         return this.http.get<Installation[]>(this.apiUrl);
     }
 

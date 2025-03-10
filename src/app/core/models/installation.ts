@@ -14,6 +14,7 @@ export interface Installation {
   rooms: Room[];
   userId: string;
   status: 'online' | 'offline';
+  isCluster?: boolean; // Flag to distinguish between clusters and installations
   createdAt?: Date;
   updatedAt?: Date;
 }

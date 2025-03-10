@@ -10,4 +10,5 @@ export interface User {
     isVerified: boolean;
     language: string;
     company: string;
+    installationPermissions?: string[]; // Array of installation IDs the user has access to
 }
