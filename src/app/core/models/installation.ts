@@ -7,8 +7,9 @@ export interface Installation {
   cluster: string;
   route: string;
   boxId: string;
-  latitude: number;
-  longitude: number;
+  latitude?: number;
+  longitude?: number;
+  planImage?: string;
   parent: string;
   devices: Device[];
   rooms: Room[];

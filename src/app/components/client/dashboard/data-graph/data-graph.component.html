@@ -25,6 +25,15 @@
         (click)="updateTimeRange(30)"
         [disabled]="isLoading || !selectedDevice">30d</button>
     </div>
+
+    <div class="download-csv">
+      <button 
+        (click)="downloadCSV()"
+        [disabled]="isLoading || !selectedDevice || hasError"
+        class="csv-button">
+        Download CSV
+      </button>
+    </div>
   </div>
 
   <h3 *ngIf="selectedDevice" class="graph-title">On/Off Status History</h3>

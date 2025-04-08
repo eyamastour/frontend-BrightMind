@@ -35,6 +35,16 @@ import { NotificationDialogComponent } from './notification-dialog/notification-
   ]
 })
 export class RoomDevicesComponent implements OnInit {
+  // Map device types to their corresponding units
+  private deviceUnits: { [key: string]: string } = {
+    'climatic station': '°C',
+    'movement station': 'count',
+    'sensor': '',  // Generic sensor, will be determined based on context
+    'on/off device': '',
+    'IR telecommand': '',
+    'command motor': '%',
+    'camera station': ''
+  };
   devices: Device[] = [];
   filteredDevices: Device[] = [];
   roomId: string | null = null;
@@ -172,9 +182,18 @@ export class RoomDevicesComponent implements OnInit {
   }
 
   openNotificationDialog(device: Device): void {
+    // Check if this device has an active alarm
+    const hasActiveAlarm = this.activeAlarms.has(device._id!);
+    
+    // Create a copy of the device with the active alarm status
+    const deviceWithAlarmStatus = {
+      ...device,
+      hasActiveAlarm
+    };
+    
     const dialogRef = this.dialog.open(NotificationDialogComponent, {
       width: '400px',
-      data: device
+      data: deviceWithAlarmStatus
     });
 
     dialogRef.afterClosed().subscribe(result => {
@@ -233,6 +252,21 @@ export class RoomDevicesComponent implements OnInit {
     }
   }
 
+
+  /**
+   * Gets the appropriate unit for a device based on its type
+   * @param device The device to get the unit for
+   * @returns The unit string to display
+   */
+  getDeviceUnit(device: Device): string {
+    // Only show units for sensor devices with numerical values
+    if (device.deviceType !== 'sensor' || typeof device.value !== 'number') {
+      return '';
+    }
+
+    // Return the unit based on device type
+    return this.deviceUnits[device.type] || '';
+  }
 
   updateFilteredDevices(): void {
     if (!this.searchTerm) {

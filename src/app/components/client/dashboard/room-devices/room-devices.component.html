@@ -83,7 +83,12 @@
                       </td>
                       <td>{{ device.zone || 'N/A' }}</td>
                       <td>
-                        <div class="param-value">{{ device.value || 'N/A' }}</div>
+                        <div class="param-value">
+                          {{ device.value || 'N/A' }} <span *ngIf="device.deviceType === 'sensor' && device.value">{{ getDeviceUnit(device) }}</span>
+                          <span *ngIf="device.threshold && device.deviceType === 'sensor'" class="threshold-indicator">
+                            (Threshold: {{ device.threshold }} {{ getDeviceUnit(device) }})
+                          </span>
+                        </div>
                       </td>
                       <td>
                         <!-- Parameter 2 depends on device type -->

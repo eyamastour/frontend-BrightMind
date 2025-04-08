@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { Chart, ChartConfiguration, ChartType } from 'chart.js';
 import { BaseChartDirective } from 'ng2-charts';
+import { saveAs } from 'file-saver';
 import {
   CategoryScale,
   LinearScale,
@@ -320,6 +321,56 @@ export class DataGraphComponent implements OnInit, OnDestroy {
     if (this.chart) {
       this.chart.update();
     }
+  }
+
+  downloadCSV(): void {
+    if (!this.selectedDevice?._id) return;
+    
+    this.isLoading = true;
+    this.deviceService.getDeviceHistory(this.selectedDevice._id, this.timeRange).subscribe({
+      next: (history: DeviceHistory[]) => {
+        if (history.length === 0) {
+          this.hasError = true;
+          this.errorMessage = 'No data available to download';
+          this.isLoading = false;
+          return;
+        }
+        
+        // Sort history by timestamp (oldest first)
+        const sortedHistory = [...history].sort((a, b) => 
+          new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime()
+        );
+        
+        // Create CSV header
+        const csvHeader = 'Timestamp,Device Name,Device Type,Status\n';
+        
+        // Create CSV content
+        const csvContent = sortedHistory.map(item => {
+          const timestamp = new Date(item.timestamp).toLocaleString('fr-FR');
+          const deviceName = item.deviceName || this.selectedDevice?.name || 'Unknown';
+          const deviceType = item.deviceType || 'actuator';
+          const status = item.value === true ? 'ON' : 'OFF';
+          
+          return `"${timestamp}","${deviceName}","${deviceType}","${status}"`;
+        }).join('\n');
+        
+        // Combine header and content
+        const csv = csvHeader + csvContent;
+        
+        // Create blob and download
+        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
+        const filename = `${this.selectedDevice?.name || 'device'}_history_${new Date().toISOString().slice(0, 10)}.csv`;
+        
+        saveAs(blob, filename);
+        this.isLoading = false;
+      },
+      error: (error: Error) => {
+        console.error('Error downloading device history:', error);
+        this.isLoading = false;
+        this.hasError = true;
+        this.errorMessage = 'Failed to download device history. Please try again.';
+      }
+    });
   }
 
   ngOnDestroy(): void {

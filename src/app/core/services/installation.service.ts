@@ -41,6 +41,15 @@ export class InstallationService {
         );
     }
 
+    uploadPlanImage(installationId: string, file: File): Observable<any> {
+        const formData = new FormData();
+        formData.append('planImage', file);
+        
+        return this.http.post<any>(`${this.apiUrl}/${installationId}/upload-plan`, formData).pipe(
+            tap(response => console.log('Plan image uploaded, response:', response))
+        );
+    }
+
     updateInstallation(id: string, installation: Partial<Installation>): Observable<Installation> {
         return this.http.put<Installation>(`${this.apiUrl}/${id}`, installation);
     }

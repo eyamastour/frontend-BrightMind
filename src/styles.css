@@ -63,3 +63,22 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   opacity: 1 !important;
   visibility: visible !important;
 }
+
+/* Angular Material Dialog Scrolling Styles */
+.mat-mdc-dialog-container {
+  max-height: 90vh !important;
+}
+
+.mat-mdc-dialog-surface {
+  max-height: 90vh !important;
+  overflow-y: auto !important;
+}
+
+.cdk-overlay-pane {
+  max-height: 90vh !important;
+}
+
+.mat-dialog-content {
+  max-height: 75vh !important;
+  overflow-y: auto !important;
+}

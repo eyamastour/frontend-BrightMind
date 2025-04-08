@@ -269,6 +269,24 @@
   font-weight: 500;
 }
 
+.threshold-indicator {
+  display: inline-block;
+  margin-left: 8px;
+  font-size: 12px;
+  color: #666;
+  background-color: #f0f0f0;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-weight: normal;
+}
+
+/* Style for the unit display */
+.param-value span {
+  font-size: 0.85em;
+  color: #666;
+  margin-left: 2px;
+}
+
 .param-label {
   color: #718096;
   font-size: 14px;

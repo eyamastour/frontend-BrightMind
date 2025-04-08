@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
@@ -92,27 +92,34 @@ import { map } from 'rxjs/operators';
           </div>
 
           <!-- Location Section -->
-          <div class="form-section">
-            <h3 class="section-title">Location Details</h3>
-            <div class="coordinates-grid">
-              <mat-form-field appearance="outline" class="form-field">
-                <mat-label>Latitude</mat-label>
-                <mat-icon matPrefix class="field-icon">place</mat-icon>
-                <input matInput type="number" formControlName="latitude" placeholder="Enter latitude">
-                <mat-error *ngIf="installationForm.get('latitude')?.hasError('required')">
-                  Latitude is required
-                </mat-error>
-              </mat-form-field>
+         
+        </div>
 
-              <mat-form-field appearance="outline" class="form-field">
-                <mat-label>Longitude</mat-label>
-                <mat-icon matPrefix class="field-icon">explore</mat-icon>
-                <input matInput type="number" formControlName="longitude" placeholder="Enter longitude">
-                <mat-error *ngIf="installationForm.get('longitude')?.hasError('required')">
-                  Longitude is required
-                </mat-error>
-              </mat-form-field>
+        <!-- Plan Image Upload Section -->
+        <div class="form-section">
+          <h3 class="section-title">Plan Image</h3>
+          <div class="file-upload-container">
+            <input 
+              type="file" 
+              #fileInput 
+              style="display: none" 
+              accept="image/*" 
+              (change)="onFileSelected($event)"
+            >
+            <div class="file-info">
+              <span *ngIf="selectedFile">{{ selectedFile.name }}</span>
+              <span *ngIf="!selectedFile">No file selected</span>
             </div>
+            <button 
+              type="button" 
+              mat-raised-button 
+              color="primary" 
+              class="upload-button" 
+              (click)="triggerFileInput()"
+            >
+              <mat-icon>upload</mat-icon>
+              Ajoute Plan
+            </button>
           </div>
         </div>
 
@@ -134,6 +141,8 @@ import { map } from 'rxjs/operators';
       padding: 24px;
       max-width: 800px;
       margin: 0 auto;
+      max-height: 90vh;
+      overflow-y: auto;
     }
 
     .installation-type-group {
@@ -241,6 +250,34 @@ import { map } from 'rxjs/operators';
       background-color: rgba(26, 115, 232, 0.5);
     }
 
+    .file-upload-container {
+      display: flex;
+      align-items: center;
+      margin-top: 16px;
+      padding: 12px;
+      border: 1px dashed #ccc;
+      border-radius: 4px;
+      background-color: #f9f9f9;
+    }
+
+    .file-info {
+      flex: 1;
+      margin-right: 16px;
+      color: #5f6368;
+      font-size: 14px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .upload-button {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background-color: #1a73e8;
+      color: white;
+    }
+
     ::ng-deep .mat-form-field-wrapper {
       margin-bottom: 0;
     }
@@ -262,6 +299,8 @@ import { map } from 'rxjs/operators';
 export class AddInstallationComponent implements OnInit {
   installationForm!: FormGroup;
   existingClusters: Installation[] = [];
+  selectedFile: File | null = null;
+  @ViewChild('fileInput') fileInput!: ElementRef;
 
   constructor(
     private fb: FormBuilder,
@@ -280,8 +319,7 @@ export class AddInstallationComponent implements OnInit {
       name: ['', Validators.required],
       route: ['', Validators.required],
       boxId: ['', Validators.required],
-      latitude: [''],
-      longitude: [''],
+
       parent: ['ROOT']
     });
 
@@ -362,13 +400,23 @@ export class AddInstallationComponent implements OnInit {
       delete formValue.installationType;
       delete formValue.existingClusterId;
 
+      // Set default values for latitude and longitude
+      formValue.latitude = 0;
+      formValue.longitude = 0;
+
       console.log('Submitting installation:', formValue);
 
       this.installationService.addInstallation(formValue)
         .subscribe({
           next: (installation: Installation) => {
             console.log('Installation added successfully:', installation);
-            this.dialogRef.close(installation);
+            
+            // If a file was selected, upload it
+            if (this.selectedFile) {
+              this.uploadPlanImage(installation._id);
+            } else {
+              this.dialogRef.close(installation);
+            }
           },
           error: (error: any) => {
             console.error('Error adding installation:', error);
@@ -380,6 +428,44 @@ export class AddInstallationComponent implements OnInit {
           }
         });
     }
+  }
+
+  onFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files.length) {
+      this.selectedFile = input.files[0];
+      console.log('File selected:', this.selectedFile.name);
+    }
+  }
+
+  uploadPlanImage(installationId: string): void {
+    if (!this.selectedFile) {
+      this.dialogRef.close();
+      return;
+    }
+
+    this.installationService.uploadPlanImage(installationId, this.selectedFile)
+      .subscribe({
+        next: (response) => {
+          console.log('Plan image uploaded successfully:', response);
+          this.snackBar.open('Plan image uploaded successfully', 'Close', { duration: 3000 });
+          this.dialogRef.close();
+        },
+        error: (error) => {
+          console.error('Error uploading plan image:', error);
+          this.snackBar.open(
+            error.error?.message || 'Failed to upload plan image. Please try again.',
+            'Close',
+            { duration: 5000 }
+          );
+          // Still close the dialog as the installation was created successfully
+          this.dialogRef.close();
+        }
+      });
+  }
+
+  triggerFileInput(): void {
+    this.fileInput.nativeElement.click();
   }
 
   onCancel(): void {

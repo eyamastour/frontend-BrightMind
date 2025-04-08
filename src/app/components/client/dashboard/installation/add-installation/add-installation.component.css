@@ -17,6 +17,8 @@
   border-radius: 8px;
   width: 100%;
   max-width: 500px;
+  max-height: 90vh;
+  overflow-y: auto;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
@@ -55,6 +57,7 @@ h2 {
 
 .modal-body {
   padding: 1.5rem;
+  overflow-y: auto;
 }
 
 .form-group {
